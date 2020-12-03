@@ -36,8 +36,8 @@ cv::Mat_<cv::Vec<T, 3>> rawToRgb(const std::vector<T>& rawImage, CameraIsp& came
    loaded from the default location, <image_directory>/kDefaultIspConfigFilename */
 template <typename T>
 cv::Mat_<cv::Vec<T, 3>> rawToRgb(
-    const boost::filesystem::path& rawImageFilename,
-    const boost::filesystem::path& ispConfigFilename = "",
+    const filesystem::path& rawImageFilename,
+    const filesystem::path& ispConfigFilename = "",
     int pow2DownscaleFactor = 1,
     DemosaicFilter demosaicFilter = kDefaultDemosaicFilterForRawToRgb,
     bool applyToneCurve = true);
@@ -45,8 +45,8 @@ cv::Mat_<cv::Vec<T, 3>> rawToRgb(
 /* Same as above, except that here, output precision is determined at runtime and matches the raw
    images's precision */
 cv::Mat rawToRgb(
-    const boost::filesystem::path& rawImageFilename,
-    const boost::filesystem::path& ispConfigFilename = "",
+    const filesystem::path& rawImageFilename,
+    const filesystem::path& ispConfigFilename = "",
     int pow2DownscaleFactor = 1,
     DemosaicFilter demosaicFilter = kDefaultDemosaicFilterForRawToRgb,
     bool applyToneCurve = true);
@@ -56,15 +56,15 @@ cv::Mat rawToRgb(
    <image_directory>/DEFAULT_ISP_CONFIG_FILENAME */
 template <typename T>
 bool writeDng(
-    const boost::filesystem::path& rawImageFilename,
-    const boost::filesystem::path& outputFilename,
-    const boost::filesystem::path& ispConfigFilename = "");
+    const filesystem::path& rawImageFilename,
+    const filesystem::path& outputFilename,
+    const filesystem::path& ispConfigFilename = "");
 
 /* Same as above, except that here, precision of the written DNG is determined at runtime and
 matches the raw image's precision */
 bool writeDng(
-    const boost::filesystem::path& rawImageFilename,
-    const boost::filesystem::path& outputFilename,
-    const boost::filesystem::path& ispConfigFilename = "");
+    const filesystem::path& rawImageFilename,
+    const filesystem::path& outputFilename,
+    const filesystem::path& ispConfigFilename = "");
 
 }; // namespace fb360_dep

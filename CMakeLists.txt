@@ -23,7 +23,7 @@ if(APPLE)
   set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD}")
 endif()
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -33,7 +33,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -m64 -O3 -funroll-loops -pipe")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -mmmx -mavx -msse -msse3")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wsign-compare")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
 if(BUILD_LINE_COVERAGE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping")
@@ -60,7 +60,7 @@ endif()
 file(GLOB SRC "${CMAKE_CURRENT_SOURCE_DIR}/source/*")
 add_custom_target(_source SOURCES ${SRC})
 
-find_package(OpenCV 3 REQUIRED core imgproc imgcodecs highgui objdetect video)
+find_package(OpenCV REQUIRED core imgproc imgcodecs highgui objdetect video)
 set(OPENCV_COMPONENTS
     opencv_core
     opencv_imgproc
@@ -73,7 +73,7 @@ set(OPENCV_COMPONENTS
 # because Boost::timer depends on Boost::chrono
 find_package(Boost REQUIRED COMPONENTS chrono filesystem system program_options regex timer)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ") #-Werror
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Ceres 1.14 REQUIRED)
@@ -81,6 +81,7 @@ find_package(gflags 2.2 REQUIRED)
 find_package(glog 0.3 REQUIRED)
 find_package(Eigen3 3.3 REQUIRED)
 find_package(double-conversion 3.0)
+find_package(ZLIB REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
 if(APPLE)

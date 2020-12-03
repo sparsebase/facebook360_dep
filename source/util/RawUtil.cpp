@@ -91,8 +91,8 @@ template cv::Mat_<cv::Vec<uint16_t, 3>>
 rawToRgb(const filesystem::path&, const filesystem::path&, int, DemosaicFilter, bool);
 
 cv::Mat rawToRgb(
-    const boost::filesystem::path& rawImageFilename,
-    const boost::filesystem::path& ispConfigFilename,
+    const filesystem::path& rawImageFilename,
+    const filesystem::path& ispConfigFilename,
     int pow2DownscaleFactor,
     DemosaicFilter demosaicFilter,
     bool applyToneCurve) {
