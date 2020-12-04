@@ -267,7 +267,7 @@ void convertFrame(
 void fuse(const Camera::Rig& rig, const std::vector<std::string>& outputFormats) {
   // Open disks
   std::vector<FILE*> disks;
-  boost::filesystem::create_directories(FLAGS_fused);
+  filesystem::create_directories(FLAGS_fused);
   for (int i = 0; i < FLAGS_fuse_strip; ++i) {
     const std::string diskName = folly::sformat("{}/fused_{}.bin", FLAGS_fused, std::to_string(i));
     FILE* disk = fopen(diskName.c_str(), "wb");

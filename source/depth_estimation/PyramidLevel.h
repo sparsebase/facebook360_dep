@@ -510,7 +510,7 @@ struct PyramidLevel {
           const std::string& dstId = rigDst[dstIdx].id;
           const filesystem::path fn =
               depth_estimation::genFilename(outputDir, imageType, level, dstId, frameName, t);
-          boost::filesystem::create_directories(fn.parent_path());
+          filesystem::create_directories(fn.parent_path());
           if (t == "exr") {
             cv_util::imwriteExceptionOnFail(fn, disp);
           } else if (t == "pfm") {

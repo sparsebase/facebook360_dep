@@ -69,7 +69,7 @@ void plotMatches(
 }
 
 void getPyramidLevelSizes(std::map<int, cv::Size>& sizes, const filesystem::path& imageDir) {
-  if (!boost::filesystem::exists(imageDir)) {
+  if (!filesystem::exists(imageDir)) {
     return;
   }
   // Use the first image we find at each level

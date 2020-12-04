@@ -499,7 +499,7 @@ static GLuint loadImageTexture(const std::string& filename) {
 
   using VectorXb = Eigen::Matrix<uint8_t, Eigen::Dynamic, 1>;
   debugSaveBinary(
-      boost::filesystem::path(filename).replace_extension(".rgba").string(),
+      filesystem::path(filename).replace_extension(".rgba").string(),
       Eigen::Map<VectorXb>(data, width * height * kDstChannels));
   // hand it to opengl
   GLuint result = linearTexture2D(width, height, GL_SRGB8_ALPHA8, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -612,7 +612,7 @@ static GLuint loadDdsTexture(const std::string& filename) {
   // read the bytes
   std::vector<uint8_t> compressed(size);
   file.read((char*)compressed.data(), compressed.size());
-  debugSaveBinary(boost::filesystem::path(filename).replace_extension(".bc7").string(), compressed);
+  debugSaveBinary(filesystem::path(filename).replace_extension(".bc7").string(), compressed);
   // hand it to opengl
   return linearCompressedTexture2D(width, height, glFormat, compressed.data(), compressed.size());
 }

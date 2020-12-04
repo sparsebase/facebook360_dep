@@ -9,7 +9,6 @@
 
 #ifdef WIN32
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem> // C++-standard header file name
 #include <filesystem> // Microsoft-specific implementation header file name
 #else
 #define BOOST_FILESYSTEM_NO_DEPRECATED
@@ -20,7 +19,7 @@
 
 namespace filesystem {
 #ifdef WIN32
-using namespace std::experimental::filesystem;
+using namespace std::filesystem;
 #else
 using namespace boost::filesystem;
 #endif

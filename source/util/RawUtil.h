@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include "source/util/FilesystemUtil.h"
 #include <opencv2/core.hpp>
 
 #define kDefaultIspConfigFilename "isp.json"
@@ -23,7 +23,7 @@ extern const DemosaicFilter kDefaultDemosaicFilterForRawToRgb;
 
 /* Loads the ISP from the given file, configured with the given runtime options */
 std::unique_ptr<CameraIsp> cameraIspFromConfigFileWithOptions(
-    const boost::filesystem::path& configFilename,
+    const filesystem::path& configFilename,
     int pow2DownscaleFactor = 1,
     DemosaicFilter demosaicFilter = kDefaultDemosaicFilterForRawToRgb,
     bool applyToneCurve = true);

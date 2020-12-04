@@ -121,9 +121,9 @@ std::string getCameraId(const ImageId& image) {
   // image is actually a path
   filesystem::path path = image;
   if (FLAGS_dir_per_frame) {
-    return path.stem().native();
+      return path.stem().string();
   }
-  return path.parent_path().filename().native();
+  return path.parent_path().filename().string();
 }
 
 int getFrameIndex(const ImageId& image) {

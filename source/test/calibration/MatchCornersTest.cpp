@@ -114,11 +114,11 @@ void insertIfInsideImage(
 
 TEST(MatchCornersTest, TestTransformationDetection) {
   // flags that need to be defined for calls to MatchCorners
-  FLAGS_color = boost::filesystem::unique_path("test_%%%%%%").string();
+  FLAGS_color = filesystem::unique_path("test_%%%%%%").string();
   FLAGS_frame = "000000";
-  const std::string matches_basenane = boost::filesystem::unique_path("matches_%%%%%%").string();
+  const std::string matches_basenane = filesystem::unique_path("matches_%%%%%%").string();
   FLAGS_matches = folly::sformat("{}/{}.json", FLAGS_color, matches_basenane);
-  const std::string rig_basenane = boost::filesystem::unique_path("rig_%%%%%%").string();
+  const std::string rig_basenane = filesystem::unique_path("rig_%%%%%%").string();
   FLAGS_rig_in = folly::sformat("{}/{}.json", FLAGS_color, rig_basenane);
   FLAGS_min_features = 0;
 
@@ -168,7 +168,7 @@ TEST(MatchCornersTest, TestTransformationDetection) {
   image = translate(image, tX, tY);
 
   std::string testPath = folly::sformat("{}/cam/", FLAGS_color);
-  boost::filesystem::create_directories(testPath);
+  filesystem::create_directories(testPath);
 
   cv_util::imwriteExceptionOnFail(folly::sformat("{}/{}.png", testPath, FLAGS_frame), image);
   Camera::saveRig(FLAGS_rig_in, rig);
@@ -196,9 +196,9 @@ TEST(MatchCornersTest, TestTransformationDetection) {
         bestTrueCorner.y());
   }
 
-  boost::filesystem::remove_all(FLAGS_color);
-  boost::filesystem::remove_all(FLAGS_rig_in);
-  boost::filesystem::remove_all(FLAGS_matches);
+  filesystem::remove_all(FLAGS_color);
+  filesystem::remove_all(FLAGS_rig_in);
+  filesystem::remove_all(FLAGS_matches);
 }
 
 } // namespace fb360_dep

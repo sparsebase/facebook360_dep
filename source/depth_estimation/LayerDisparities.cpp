@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
     for (ssize_t camIdx = 0; camIdx < ssize(rigDst); ++camIdx) {
       const filesystem::path outputDir =
           depth_estimation::getImageDir(FLAGS_output, ImageType::disparity, rigDst[camIdx].id);
-      boost::filesystem::create_directories(outputDir);
+      filesystem::create_directories(outputDir);
       const filesystem::path outputPath = outputDir / (frameName + ".png");
       layerDisparities(foregroundDisparities[camIdx], backgroundDisparities[camIdx], outputPath);
     }

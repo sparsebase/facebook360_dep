@@ -79,8 +79,8 @@ void saveDisparity(
         frameName,
         outputFormat);
 
-    if (!boost::filesystem::exists(fn.parent_path())) {
-      boost::filesystem::create_directories(fn.parent_path());
+    if (!filesystem::exists(fn.parent_path())) {
+      filesystem::create_directories(fn.parent_path());
     }
     if (outputFormat != "pfm") {
       const cv::Mat scaledDisparity = cv_util::convertTo<uint16_t>(disparity);
@@ -107,7 +107,7 @@ void populateMinMaxFrame(
   for (int frameIdx = curFrameIdx - FLAGS_time_radius; frameIdx <= curFrameIdx + FLAGS_time_radius;
        ++frameIdx) {
     const std::string frameName = image_util::intToStringZeroPad(frameIdx, 6);
-    if (boost::filesystem::exists(filesystem::path(levelDir) / (frameName + ext))) {
+    if (filesystem::exists(filesystem::path(levelDir) / (frameName + ext))) {
       localFirstFrameIdx = std::min(frameIdx, localFirstFrameIdx);
       localLastFrameIdx = std::max(frameIdx, localLastFrameIdx);
     }

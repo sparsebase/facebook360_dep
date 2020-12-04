@@ -10,8 +10,7 @@
 #include <iterator>
 #include <mutex>
 
-#include <boost/filesystem.hpp>
-
+#include "source/util/FilesystemUtil.h"
 #include <folly/Format.h>
 
 #include "source/gpu/GlUtil.h"
@@ -136,7 +135,7 @@ struct VideoFile {
 
  private:
   static folly::dynamic parseCatalog(const std::string& fileName) {
-    CHECK(boost::filesystem::exists(boost::filesystem::path(fileName)));
+    CHECK(filesystem::exists(filesystem::path(fileName)));
     std::ifstream file(fileName, std::ios::binary);
     folly::dynamic catalog = folly::parseJson(std::string(
         (std::istreambuf_iterator<char>(file)), // most vexing parse

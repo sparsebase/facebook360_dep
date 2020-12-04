@@ -9,7 +9,7 @@
 
 #include <vector>
 
-#include <boost/filesystem.hpp>
+#include "source/util/FilesystemUtil.h"
 
 #include "source/gpu/GlUtil.h"
 #include "source/render/AsyncLoader.h"

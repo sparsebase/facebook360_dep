@@ -8,7 +8,7 @@
 #pragma once
 
 #include <fstream>
-
+#include <filesystem>
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <Eigen/Geometry>
@@ -97,7 +97,7 @@ inline void writeObj(
   CHECK(vertexes.cols() == 3 || st) << "expected xyz or xyzst";
   CHECK_EQ(st, !filenameMtl.empty()) << "texture coordinates and material go together";
 
-  FILE* fp = fopen(filenameObj.c_str(), "w");
+  FILE* fp = fopen(filenameObj.string().c_str(), "w");
   CHECK(fp) << "file open failed: " << filenameObj;
   if (!filenameMtl.empty()) {
     fprintf(fp, "mtllib %s\nusemtl material\n", filenameMtl.c_str());

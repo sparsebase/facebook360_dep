@@ -92,6 +92,11 @@ else()
 endif()
 set(FOLLY_TARGET ${FOLLY_LIB} double-conversion)
 
+# Also set NOMINMAX, so the min and max functions are not overwritten with macros.
+IF(MSVC)
+    add_definitions(-DNOMINMAX)
+ENDIF()
+
 ###### Targets ######
 
 ### TARGET AlignColors ###

@@ -130,7 +130,7 @@ void upsampleFrame(const Camera::Rig& rigSrc, const Camera::Rig& rigDst, const s
     for (const std::string& ext : outputFormats) {
       const std::string frameFn = ext[0] == '.' ? frame + ext : frame + '.' + ext;
       const filesystem::path fn = filesystem::path(FLAGS_output) / rigDst[i].id / frameFn;
-      boost::filesystem::create_directories(fn.parent_path());
+      filesystem::create_directories(fn.parent_path());
 
       if (ext != "pfm") {
         cv_util::imwriteExceptionOnFail(fn, cv_util::convertTo<uint16_t>(dispsUp[i]));
