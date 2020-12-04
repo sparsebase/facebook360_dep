@@ -306,7 +306,7 @@ void fuse(const Camera::Rig& rig, const std::vector<std::string>& outputFormats)
   // Copy original fused rig
   const filesystem::path jsonSrc = filesystem::getFirstFile(FLAGS_bin, false, false, ".json");
   const filesystem::path jsonDst = filesystem::path(FLAGS_fused) / jsonSrc.filename();
-  filesystem::copy_file(jsonSrc, jsonDst, filesystem::copy_option::overwrite_if_exists);
+  filesystem::copy_file(jsonSrc, jsonDst, filesystem::copy_options::overwrite_existing);
 }
 
 void resizeRig(Camera::Rig& rig) {
