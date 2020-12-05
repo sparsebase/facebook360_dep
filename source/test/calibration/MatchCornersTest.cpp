@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include <string>
-
+#include <boost/filesystem.hpp>
 #include <gtest/gtest.h>
 
 #include <folly/FileUtil.h>
@@ -114,11 +114,11 @@ void insertIfInsideImage(
 
 TEST(MatchCornersTest, TestTransformationDetection) {
   // flags that need to be defined for calls to MatchCorners
-  FLAGS_color = filesystem::unique_path("test_%%%%%%").string();
+  FLAGS_color = boost::filesystem::unique_path("test_%%%%%%").string();
   FLAGS_frame = "000000";
-  const std::string matches_basenane = filesystem::unique_path("matches_%%%%%%").string();
+  const std::string matches_basenane = boost::filesystem::unique_path("matches_%%%%%%").string();
   FLAGS_matches = folly::sformat("{}/{}.json", FLAGS_color, matches_basenane);
-  const std::string rig_basenane = filesystem::unique_path("rig_%%%%%%").string();
+  const std::string rig_basenane = boost::filesystem::unique_path("rig_%%%%%%").string();
   FLAGS_rig_in = folly::sformat("{}/{}.json", FLAGS_color, rig_basenane);
   FLAGS_min_features = 0;
 

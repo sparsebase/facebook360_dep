@@ -90,7 +90,7 @@ else()
   find_package(Folly REQUIRED)
   set(FOLLY_LIB Folly::folly)
 endif()
-set(FOLLY_TARGET ${FOLLY_LIB} double-conversion)
+set(FOLLY_TARGET ${FOLLY_LIB} double-conversion::double-conversion)
 
 # Also set NOMINMAX, so the min and max functions are not overwritten with macros.
 IF(MSVC)
