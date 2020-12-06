@@ -7,6 +7,8 @@ if(APPLE)
   set(ISPC_EXEC "ispc_osx")
 elseif(LINUX)
   set(ISPC_EXEC "ispc_linux")
+elseif(WIN32)
+  set(ISPC_EXEC "ispc_win")
 endif()
 
 

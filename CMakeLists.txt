@@ -204,17 +204,17 @@ target_link_libraries(
 
 ### TARGET ConvertToBinary ###
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/ISPC.cmake")
-add_executable(
-  ConvertToBinary
-  source/mesh_stream/ConvertToBinary.cpp
-  source/render/MeshSimplifier.cpp
-)
-target_link_libraries(
-  ConvertToBinary
-  LibUtil
-  ispc_texcomp
-)
+#include("${CMAKE_CURRENT_SOURCE_DIR}/ISPC.cmake")
+#add_executable(
+#  ConvertToBinary
+#  source/mesh_stream/ConvertToBinary.cpp
+#  source/render/MeshSimplifier.cpp
+#)
+#target_link_libraries(
+#  ConvertToBinary
+#  LibUtil
+#  ispc_texcomp
+#)
 
 ### TARGET CorrectVignetting ###
 
@@ -428,7 +428,7 @@ add_library(
 )
 target_link_libraries(
   LibUtil
-  gflags
+  gflags_static
   Boost::filesystem
   Boost::system
   Boost::program_options
