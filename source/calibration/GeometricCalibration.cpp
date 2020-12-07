@@ -883,6 +883,9 @@ void solve(ceres::Problem& problem) {
   }
   options.function_tolerance = FLAGS_ceres_function_tolerance;
 
+  /* try other solvers than default SPARSE_SCHUR */
+  options.linear_solver_type = ceres::ITERATIVE_SCHUR;
+
   ceres::Solver::Summary summary;
 
   LOG(INFO) << getReprojectionReport(problem);
