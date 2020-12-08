@@ -29,13 +29,13 @@ struct Soundtrack {
 
     CHECK(err == TBE::EngineError::OK) << "failed to create audio file decoder" << int(err);
 
-    // the engine's audiod device and mixer must be started
+    // the engine's audio device and mixer must be started
     audioEngine->start();
     audioEngine->enablePositionalTracking(true, TBE::TBVector(0, 0, 0));
 
     // setup an event callback to know when the file is ready for playback
     audioFile->setEventCallback(
-        [](TBE::Event event, void* owner, void* userData) {
+        [](TBE::Event event, void* userData) {
           if (event == TBE::Event::DECODER_INIT) {
             std::cout << "ready to play soundtrack" << std::endl;
             static_cast<Soundtrack*>(userData)->isReady = true;

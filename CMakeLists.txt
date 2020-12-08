@@ -210,17 +210,17 @@ target_link_libraries(
 
 ### TARGET ConvertToBinary ###
 
-#include("${CMAKE_CURRENT_SOURCE_DIR}/ISPC.cmake")
-#add_executable(
-#  ConvertToBinary
-#  source/mesh_stream/ConvertToBinary.cpp
-#  source/render/MeshSimplifier.cpp
-#)
-#target_link_libraries(
-#  ConvertToBinary
-#  LibUtil
-#  ispc_texcomp
-#)
+include("${CMAKE_CURRENT_SOURCE_DIR}/ISPC.cmake")
+add_executable(
+  ConvertToBinary
+  source/mesh_stream/ConvertToBinary.cpp
+  source/render/MeshSimplifier.cpp
+)
+target_link_libraries(
+  ConvertToBinary
+  LibUtil
+  ispc_texcomp
+)
 
 ### TARGET CorrectVignetting ###
 
@@ -609,3 +609,8 @@ target_link_libraries(
   ViewForegroundMaskThresholds
   LibUtil
 )
+
+### Windows GLViewer ###
+if(WIN32)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/windows)
+endif()

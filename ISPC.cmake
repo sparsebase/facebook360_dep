@@ -8,9 +8,10 @@ if(APPLE)
 elseif(LINUX)
   set(ISPC_EXEC "ispc_linux")
 elseif(WIN32)
-  set(ISPC_EXEC "ispc_win")
+  set(ISPC_EXEC "ispc.exe")
 endif()
 
+file(MAKE_DIRECTORY ${ISPC_BUILD_DIR})
 
 add_custom_command(
   OUTPUT
@@ -19,7 +20,6 @@ add_custom_command(
     ${ISPC_BUILD_DIR}/kernel_astc_ispc_avx.o
     ${ISPC_BUILD_DIR}/kernel_astc_ispc.h
   COMMAND
-    mkdir -p ${ISPC_BUILD_DIR} &&
     ${ISPC_SOURCE_DIR}/${ISPC_EXEC} ${ISPC_FLAGS} -o ${ISPC_BUILD_DIR}/kernel_astc_ispc.o
     -h ${ISPC_BUILD_DIR}/kernel_astc_ispc.h ${TEXCOMP_DIR}/kernel_astc.ispc
   DEPENDS
@@ -34,7 +34,6 @@ add_custom_command(
     ${ISPC_BUILD_DIR}/kernel_ispc_avx.o
     ${ISPC_BUILD_DIR}/kernel_ispc.h
   COMMAND
-    mkdir -p ${ISPC_BUILD_DIR} &&
     ${ISPC_SOURCE_DIR}/${ISPC_EXEC} ${ISPC_FLAGS} -o ${ISPC_BUILD_DIR}/kernel_ispc.o
     -h ${ISPC_BUILD_DIR}/kernel_ispc.h ${TEXCOMP_DIR}/kernel.ispc
   DEPENDS
@@ -56,7 +55,7 @@ target_include_directories(
 set_target_properties(ispc_pre PROPERTIES COMPILE_FLAGS "-w")
 
 add_library(
-  ispc_texcomp SHARED
+  ispc_texcomp 
   ${TEXCOMP_DIR}/ispc_texcomp.h
   $<TARGET_OBJECTS:ispc_pre>
   ${ISPC_BUILD_DIR}/kernel_astc_ispc.o
