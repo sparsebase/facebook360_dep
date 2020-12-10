@@ -92,7 +92,7 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 
 if(WIN32)
   find_package(zlib REQUIRED)
-  find_package(gtest REQUIRED)
+  find_package(GTest REQUIRED)
 endif()
 
 if(APPLE)
@@ -101,7 +101,7 @@ else()
   find_package(Folly REQUIRED)
   set(FOLLY_LIB Folly::folly)
 endif()
-set(FOLLY_TARGET ${FOLLY_LIB} double-conversion)
+set(FOLLY_TARGET ${FOLLY_LIB} double-conversion::double-conversion)
 
 ###### Targets ######
 
@@ -179,7 +179,7 @@ target_link_libraries(
 
 ### TARGET DepUnitTest ###
 if(WIN32)
-  set(GTEST_TARGET "GTest::gtest GTest::gtest_main")
+  set(GTEST_TARGET GTest::gtest GTest::gtest_main)
 else()
   set(GTEST_TARGET gtest)
 endif()
