@@ -101,7 +101,7 @@ else()
   find_package(Folly REQUIRED)
   set(FOLLY_LIB Folly::folly)
 endif()
-set(FOLLY_TARGET ${FOLLY_LIB})
+set(FOLLY_TARGET ${FOLLY_LIB} double-conversion)
 
 ###### Targets ######
 
@@ -178,6 +178,11 @@ target_link_libraries(
 )
 
 ### TARGET DepUnitTest ###
+if(WIN32)
+  set(GTEST_TARGET "GTest::gtest GTest::gtest_main")
+else()
+  set(GTEST_TARGET gtest)
+endif()
 
 add_executable(
   DepUnitTest
@@ -193,7 +198,7 @@ target_link_libraries(
   DepUnitTest
   CalibrationLib
   LibUtil
-  GTest::gtest GTest::gtest_main
+  ${GTEST_TARGET}
 )
 
 ### TARGET ComputeRephotographyErrors ###
@@ -610,7 +615,7 @@ target_link_libraries(
   LibUtil
 )
 
-### Windows GLViewer ###
+### Windows Rift viewer ###
 if(WIN32)
     add_subdirectory(${CMAKE_SOURCE_DIR}/windows)
 endif()
