@@ -7,3 +7,5 @@ cmake_install.cmake
 lib/
 xcode/
 website/node_modules
+__pycache__
+
