@@ -12,7 +12,7 @@
 
 #include <boost/timer/timer.hpp>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/calibration/FeatureDetector.h"
 
@@ -288,29 +288,27 @@ Overlap findMatches(
   }
 
   // Only report timing in single threaded mode
-  // In multithreaded mode these will clocks include time from other threads
+  // In multi-threaded mode these will clocks include time from other threads
   // running simultaneously
   if (FLAGS_enable_timing && FLAGS_threads == 1) {
-    LOG(INFO) << folly::sformat(
-        "{} and {} matching complete. Overlap fraction: {}. Matches: {}. Timing: {} "
-        "Calls to ZNCC: {}. ZNCC Time: {} "
-        "Calls to ProjectCorners: {}. Project Corner Time: {} ",
-        camera0.id,
-        camera1.id,
-        camera0.overlap(camera1),
-        overlap.matches.size(),
-        timer.format(),
-        callsToZncc,
-        znccTimer.format(),
-        callsToProjectCorners,
-        projectCornerTimer.format());
+      LOG(INFO) << boost::format("%1% and %2% matching complete. Overlap fraction: %3%. Matches: %4%. Timing: %5% "
+        "Calls to ZNCC: %6%. ZNCC Time: %7% "
+        "Calls to ProjectCorners: %8%. Project Corner Time: %9% ") 
+          % camera0.id 
+          % camera1.id 
+          % camera0.overlap(camera1) 
+          % overlap.matches.size()
+          % timer.format() 
+          % callsToZncc
+          % znccTimer.format()
+          % callsToProjectCorners
+          %projectCornerTimer.format(); 
   } else {
-    LOG(INFO) << folly::sformat(
-        "{} and {} matching complete. Overlap fraction: {}. Matches: {}",
-        camera0.id,
-        camera1.id,
-        camera0.overlap(camera1),
-        overlap.matches.size());
+      LOG(INFO) << boost::format("%1% and %2% matching complete. Overlap fraction: %3%. Matches: %4%")
+          % camera0.id
+          % camera1.id
+          % camera0.overlap(camera1)
+          % overlap.matches.size(); 
   }
   return overlap;
 }
@@ -352,7 +350,7 @@ std::vector<Overlap> findAllMatches(
   }
 
   if (FLAGS_enable_timing) {
-    LOG(INFO) << folly::sformat("Matching stage time: {}", matchTimer.format());
+      LOG(INFO) << boost::format("Matching stage time: %1%") % matchTimer.format(); 
   }
 
   return overlaps;

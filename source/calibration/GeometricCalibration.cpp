@@ -17,10 +17,10 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <opencv2/opencv.hpp>
+#include <boost/format.hpp>
 
 #include <folly/FileUtil.h>
-#include <folly/Format.h>
-#include <folly/dynamic.h>
+
 #include <folly/json.h>
 
 #include "source/calibration/Calibration.h"
@@ -232,7 +232,7 @@ FeatureMap loadFeatureMap(const folly::dynamic& parsed) {
   for (const auto& image : parsed["images"].items()) {
     const ImageId path = image.first.getString();
     if (!hasCameraIndex(path)) {
-      LOG(INFO) << folly::sformat("ignoring image id {}", path);
+        LOG(INFO) << boost::format("ignoring image id %1%") % path;
       continue;
     }
     std::vector<Feature>& features = result[path];
@@ -242,7 +242,7 @@ FeatureMap loadFeatureMap(const folly::dynamic& parsed) {
   }
 
   CHECK(!result.empty()) << "verify image id format: " << imageIdFormat();
-  LOG(INFO) << folly::sformat("{} images loaded", result.size());
+  LOG(INFO) << boost::format("%1% images loaded") % result.size(); 
 
   return result;
 }
@@ -284,7 +284,7 @@ std::vector<Overlap> loadOverlaps(const folly::dynamic& parsed) {
     count += 2 * result.back().matches.size();
   }
 
-  LOG(INFO) << folly::sformat("{} feature observations loaded", count);
+  LOG(INFO) << boost::format("%1% feature observations loaded") % count; 
 
   return result;
 }
@@ -397,10 +397,9 @@ void reportReprojectionErrors(
     std::ostringstream line;
     for (int percentile : {50, 90, 99}) {
       int index = percentile * (ssize(errors[i]) - 1) / 100.0 + 0.5;
-      line << folly::format("{}%: {:.2f} ", percentile, sqrt(errors[i][index]));
+      line << boost::format("%1%%: %2.2 ") % percentile % sqrt(errors[i][index]); 
     }
-    LOG(INFO) << folly::sformat(
-        "{}: {} reproj. percentile {}", cameras[i].id, ssize(errors[i]), line.str());
+    LOG(INFO) << boost::format("%1%: %2% reproj. percentile %3%") % cameras[i].id % ssize(errors[i]) % line.str(); 
   }
 }
 
@@ -460,10 +459,10 @@ void removeOutliersFromCameras(
   }
   if (FLAGS_log_verbose) {
     for (const auto& p : outliers) {
-      LOG(INFO) << folly::sformat("Removed {} outliers from {}", p.second, p.first);
+        LOG(INFO) << boost::format("Removed %1% outliers from %2%") % p.second % p.first; 
     }
   }
-  LOG(INFO) << folly::sformat("{} of {} matches were inliers", inlierTotal, total);
+  LOG(INFO) << boost::format("%1% of %2% matches were inliers") % inlierTotal % total;  
 }
 
 void removeInvalidTraces(std::vector<Trace>& traces, FeatureMap& featureMap) {
@@ -483,7 +482,7 @@ void removeInvalidTraces(std::vector<Trace>& traces, FeatureMap& featureMap) {
       }
     }
   }
-  LOG(INFO) << folly::sformat("removed {} out of {} traces", removed, total);
+  LOG(INFO) << boost::format("removed %1% out of %2% traces") % removed % total; 
 }
 
 void triangulateTracesThread(
@@ -561,7 +560,7 @@ std::vector<Trace> assembleTraces(FeatureMap& featureMap, const std::vector<Over
     }
   }
 
-  LOG(INFO) << folly::sformat("found {} nonempty traces", nonemptyTraceCount);
+  LOG(INFO) << boost::format("found %1% nonempty traces") % nonemptyTraceCount; 
 
   return traces;
 }
@@ -665,7 +664,7 @@ cv::Mat_<cv::Vec3w> renderReprojections(
 
   if (FLAGS_errors_dir != "") {
     filesystem::create_directories(FLAGS_errors_dir);
-    std::string errorsFile = folly::sformat("{}/{}.exr", FLAGS_errors_dir, getCameraId(image));
+    std::string errorsFile = (boost::format("%1%/%2%.exr") % FLAGS_errors_dir % getCameraId(image)).str(); 
     cv_util::imwriteExceptionOnFail(errorsFile, errors);
   }
 
@@ -919,12 +918,12 @@ void validateMatchCount(const std::vector<Camera>& cameras, const std::vector<in
   std::vector<std::string> lowTraceErrors;
   for (int i = 0; i < int(counts.size()); ++i) {
     if (FLAGS_log_verbose) {
-      LOG(INFO) << folly::sformat("Camera: {} Traces: {}", cameras[i].id, counts[i]);
+        LOG(INFO) << boost::format("Camera: %1% Traces: %2%") % cameras[i].id % counts[i]; 
     }
     const double z = (counts[i] - mean) / stdev;
-    if (-z > FLAGS_outlier_z_threshold || counts[i] < FLAGS_min_traces) {
-      lowTraceErrors.push_back(
-          folly::sformat("Too few matches in camera {}: {}", cameras[i].id, counts[i]));
+    if (-z > FLAGS_outlier_z_threshold || counts[i] < FLAGS_min_traces) 
+    {
+        lowTraceErrors.push_back((boost::format("Too few matches in camera %1%: %2%") % cameras[i].id % counts[i]).str());
     }
   }
 
@@ -1134,7 +1133,7 @@ double refine(
   }
 
   // lock position
-  LOG(INFO) << folly::sformat("Pass: {}", pass);
+  LOG(INFO) << boost::format("Pass: %1") % pass; 
   // If positions are unlocked, only lock the position and rotation of the reference camera
   if (positionsUnlocked(pass)) {
     problem.SetParameterBlockConstant(positions[referenceCameraIdx].data());
@@ -1150,16 +1149,15 @@ double refine(
   if (FLAGS_robust) {
     std::vector<calibration::ReprojectionErrorOutlier> errorsIgnored =
         getReprojectionErrorOutliers(problem);
-    LOG(INFO) << folly::sformat("Number of down-weighted outliers: {}", errorsIgnored.size());
+    LOG(INFO) << boost::format("Number of down-weighted outliers: %1%") % errorsIgnored.size(); 
     std::sort(errorsIgnored.begin(), errorsIgnored.end(), math_util::sortdescPair<double, double>);
-    LOG(INFO) << folly::sformat(
-        "Highest 3 (true/weighted): {}/{}, {}/{}, {}/{}",
-        errorsIgnored[2].first,
-        errorsIgnored[2].second,
-        errorsIgnored[1].first,
-        errorsIgnored[1].second,
-        errorsIgnored[0].first,
-        errorsIgnored[0].second);
+    LOG(INFO) << boost::format("Highest 3 (true/weighted): %1%/%2%, %3%/%4%, %5%/%6%")
+        % errorsIgnored[2].first
+        % errorsIgnored[2].second
+        % errorsIgnored[1].first
+        % errorsIgnored[1].second
+        % errorsIgnored[0].first
+        % errorsIgnored[0].second;
   }
   reportReprojectionErrors(overlaps, featureMap, traces, cameras);
   solve(problem);
@@ -1172,7 +1170,7 @@ double refine(
       getReprojectionErrorNorms(problem, nullptr, FLAGS_weighted_statistics);
   double median = calcPercentile(norms, 0.5);
   if (pass == FLAGS_pass_count - 1 && median > FLAGS_max_error) {
-    LOG(INFO) << folly::sformat("Warning: Final pass median error too high: {}", median);
+      LOG(INFO) << boost::format("Warning: Final pass median error too high: %1%") % median; 
   }
 
   // write optimized camera parameters back into cameras
@@ -1202,7 +1200,7 @@ double refine(
   }
 
   if (FLAGS_enable_timing) {
-    LOG(INFO) << folly::sformat("Pass {} timing :{}", pass, timer.format());
+      LOG(INFO) << boost::format("Pass %1%  timing :%2%") % pass % timer.format();  
   }
   return median;
 }
@@ -1257,7 +1255,7 @@ double geometricCalibration() {
                 << std::endl;
     }
     if (FLAGS_enable_timing) {
-      LOG(INFO) << folly::sformat("Aggregate timing: {}", timer.format());
+        LOG(INFO) << boost::format("Aggregate timing: %1%") % timer.format(); 
     }
     Camera::saveRig(FLAGS_rig_out, cameras);
   }
