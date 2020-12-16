@@ -25,6 +25,7 @@ const char* kUsage = R"(
     --frame=000000
 )";
 
+#include <boost/format.hpp>
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
@@ -63,7 +64,7 @@ void verifyInputs(const Camera::Rig& rig) {
 
 std::vector<WorldColor> getPoints(const Camera& cam) {
   const std::string& camId = cam.id;
-  LOG(INFO) << folly::sformat("Processing camera {}...", camId);
+  LOG(INFO) << boost::format("Processing camera %1%...") % camId;
 
   // Load disparity and color, and resize color to size of disparity
   const cv::Mat_<float> disparity = loadImage<float>(FLAGS_disparity, camId, FLAGS_frame);
@@ -137,7 +138,7 @@ void writePoints(
     std::ofstream& file,
     const std::vector<std::vector<WorldColor>>& pointClouds,
     const int lines) {
-  LOG(INFO) << folly::format("Writing {} points to file...", lines);
+  LOG(INFO) << boost::format("Writing %1% points to file...") % lines;
 
   // Merge all points
   std::vector<WorldColor> pointsAll;
@@ -160,9 +161,8 @@ void writePoints(
         // A line in a pts file represents x y z "intensity" r g b
         // x y z are in meters, we arbitrarily set "intensity" to 1, and rgb is between 0 and 255
         const WorldColor& point = pointsAll[j];
-        fileI << folly::format("{} {} {} 1 ", point[0], point[1], point[2]);
-        fileI << folly::format(
-            "{:.0f} {:.0f} {:.0f}\n", 255 * point[3], 255 * point[4], 255 * point[5]);
+        fileI << boost::format("%1% %2% %3% 1 ") % point[0] % point[1] % point[2];
+        fileI << boost::format("%1$.0f %2$.0f %3$.0f\n") % (255 * point[3]) % (255 * point[4]) % (255 * point[5]);
       }
       filestreams[i] = std::move(fileI);
     });
@@ -192,7 +192,7 @@ int main(int argc, char** argv) {
   const filesystem::path fnOut = filesystem::path(FLAGS_output);
   filesystem::create_directories(fnOut.parent_path());
   std::ofstream file(fnOut.string());
-  CHECK(file.is_open()) << folly::sformat("Cannot open file for writing: {}", fnOut.string());
+  CHECK(file.is_open()) << boost::format("Cannot open file for writing: %1%") % fnOut.string();
 
   int lines = 0;
   for (const std::vector<WorldColor>& pointCloud : pointClouds) {
@@ -200,12 +200,12 @@ int main(int argc, char** argv) {
   }
 
   if (FLAGS_header_count) {
-    file << folly::format("{}\n", lines);
+    file << boost::format("%1%\n") % lines;
   }
 
   writePoints(file, pointClouds, lines);
 
-  LOG(INFO) << folly::format("{} lines written", lines);
+  LOG(INFO) << boost::format("%1% lines written") % lines;
 
   return EXIT_SUCCESS;
 }

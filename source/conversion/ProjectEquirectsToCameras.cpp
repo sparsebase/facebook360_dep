@@ -19,7 +19,7 @@ const char* kUsage = R"(
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
-
+#include <boost/format.hpp>
 #include "source/util/Camera.h"
 #include "source/util/ImageUtil.h"
 #include "source/util/SystemUtil.h"
@@ -62,8 +62,8 @@ void rescaleCameras(Camera::Rig& rig) {
       cam = cam.rescale({FLAGS_width, height});
     }
 
-    LOG(INFO) << folly::sformat(
-        "{} output resolution: {}x{}", cam.id, cam.resolution.x(), cam.resolution.y());
+    LOG(INFO) << boost::format(
+        "%1% output resolution: %2%x%3%") % cam.id % cam.resolution.x() % cam.resolution.y();
   }
 }
 
@@ -81,13 +81,13 @@ int main(int argc, char** argv) {
   const int last = std::stoi(FLAGS_last);
   for (int iFrame = first; iFrame <= last; ++iFrame) {
     const std::string frameName = image_util::intToStringZeroPad(iFrame, 6);
-    LOG(INFO) << folly::sformat("Frame {}: Loading equirect masks...", frameName);
+    LOG(INFO) << boost::format("Frame %1%: Loading equirect masks...") % frameName;
     const std::vector<cv::Mat_<bool>> eqrMasks = loadImages<bool>(FLAGS_eqr_masks, rig, frameName);
     CHECK_EQ(ssize(eqrMasks), ssize(rig));
 
     for (ssize_t i = 0; i < ssize(rig); ++i) {
       const Camera& cam = rig[i];
-      LOG(INFO) << folly::sformat("-- Frame {}: Projecting to {}...", frameName, cam.id);
+      LOG(INFO) << boost::format("-- Frame %1%: Projecting to %2%...") % frameName % cam.id;
 
       // For each pixel in the current camera find out where in equirect space we land
       ThreadPool threadPool(FLAGS_threads);

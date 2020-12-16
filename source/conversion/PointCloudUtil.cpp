@@ -11,6 +11,7 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
 
 #include "source/util/ThreadPool.h"
 
@@ -99,7 +100,7 @@ int extractPCLPointCount(std::ifstream& file) {
   goToLine(file, linePoints);
   std::getline(file, line);
   CHECK(boost::starts_with(line, "POINTS"))
-      << folly::sformat("PCL header: expected point count in line {}, got {}", linePoints, line);
+      << boost::format("PCL header: expected point count in line %1%, got %2%") % linePoints % line;
 
   std::regex rgx("POINTS (\\w+)");
   std::smatch match;
@@ -110,7 +111,7 @@ int extractPCLPointCount(std::ifstream& file) {
   try {
     return boost::lexical_cast<int>(pointCountStr);
   } catch (boost::bad_lexical_cast&) {
-    CHECK(false) << folly::sformat("PCL header: invalid point count {}", pointCountStr);
+    CHECK(false) << boost::format("PCL header: invalid point count %1%") % pointCountStr;
   }
 }
 
@@ -142,7 +143,7 @@ int getPointCount(const std::string& pointCloudFile) {
 
 PointCloud
 extractPoints(const std::string& pointCloudFile, const int pointCount, const int maxThreads) {
-  LOG(INFO) << folly::sformat("Extracting {} points from {}...", pointCount, pointCloudFile);
+  LOG(INFO) << boost::format("Extracting %1% points from %2%...") % pointCount % pointCloudFile;
 
   ThreadPool threadPool(maxThreads);
   const int threads = threadPool.getMaxThreads();
@@ -180,12 +181,12 @@ extractPoints(const std::string& pointCloudFile, const int pointCount, const int
   }
   threadPool.join();
 
-  LOG(INFO) << folly::sformat("Extracted {} points.", points.size());
+  LOG(INFO) << boost::format("Extracted %1% points.") % points.size();
   if (pointCount > 0) {
-    CHECK_EQ(pointCount, points.size()) << folly::sformat(
-        "Point count in header ({}) does not match number of extracted points ({})",
-        pointCount,
-        points.size());
+    CHECK_EQ(pointCount, points.size()) << boost::format(
+        "Point count in header (%1%) does not match number of extracted points (%2%)")
+        % pointCount
+        % points.size();
   }
 
   return points;

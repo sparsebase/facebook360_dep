@@ -7,7 +7,7 @@
 
 #include <fstream>
 #include <iostream>
-
+#include <boost/format.hpp>
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
@@ -578,12 +578,11 @@ int main(int argc, char* argv[]) {
     // Report results
     const int minC = coverages.minCoeff();
     double quality = minC + (coverages.array() >= minC + 1).count() / double(coverages.size());
-    std::cout << folly::format(
-                     "distance: {:.2f} quality: {:.2f} samples: {} {}",
-                     distance,
-                     quality,
-                     ssize(coverages),
-                     getHistogram(coverages))
+    std::cout << boost::format("distance: %1$.2f quality: %2$.2f samples: %3% %4%")
+        % distance
+        % quality
+        % ssize(coverages)
+        % getHistogram(coverages) 
               << std::endl;
   }
 

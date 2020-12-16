@@ -8,7 +8,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/render/MeshSimplifier.h"
 #include "source/render/MeshUtil.h"
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     faces = ms.getFaces();
   }
 
-  LOG(INFO) << folly::sformat("Num vertexes: {}, num faces: {}", vertexes.size(), faces.size());
+  LOG(INFO) << boost::format("Num vertexes: %1%, num faces: %2%")  % vertexes.size() % faces.size();
 
   // Create MTL and OBJ files
   LOG(INFO) << "Creating OBJ...";

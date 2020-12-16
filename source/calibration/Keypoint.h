@@ -6,7 +6,7 @@
  */
 
 #pragma once
-
+#include <boost/format.hpp>
 #include <folly/dynamic.h>
 
 #include "source/util/Camera.h"
@@ -17,7 +17,7 @@ namespace calibration {
 
 inline std::string
 getImageFilename(const std::string& image, const std::string& frame, const std::string& imageExt) {
-  return folly::sformat("{}/{}{}", image, frame, imageExt);
+  return (boost::format("%1%/%2%%3%") % image % frame % imageExt).str();
 }
 
 struct Keypoint {

@@ -20,7 +20,6 @@
 #include <boost/format.hpp>
 
 #include <folly/FileUtil.h>
-
 #include <folly/json.h>
 
 #include "source/calibration/Calibration.h"
@@ -963,9 +962,9 @@ void savePointsFile(FeatureMap& featureMap, const std::vector<Trace>& traces) {
     if (trace.references.empty()) {
       continue; // don't output zombie traces, a different trace has the references now
     }
-    file << folly::format("{} {} {} ", trace.position.x(), trace.position.y(), trace.position.z());
-    file << folly::format("1 "); // delimiter
-    file << folly::format("0 0 0"); // RGB value for the point
+    file << boost::format("%1% %2% %3% ") % trace.position.x() % trace.position.y() %trace.position.z(); 
+    file << boost::format("1 "); // delimiter
+    file << boost::format("0 0 0"); // RGB value for the point
     file << "\n";
   }
 }

@@ -22,7 +22,7 @@
 #include <GLFW/glfw3.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #ifdef __linux__
 #define USE_EGL
@@ -313,8 +313,7 @@ class GlWindow {
       fbo = createFramebuffer();
 
       // Message the graphics device info
-      LOG(INFO) << folly::format(
-          "OpenGL off-screen renderer: {}", (char*)(glGetString(GL_RENDERER)));
+      LOG(INFO) << boost::format("OpenGL off-screen renderer: %1%") % (char*)(glGetString(GL_RENDERER));
 
       // Return early avoiding glfw entirely for offscreen rendering
       return;
@@ -375,7 +374,7 @@ class GlWindow {
 #endif
 
     // Message the graphics device info
-    LOG(INFO) << folly::format("OpenGL on screen renderer: {}", (char*)(glGetString(GL_RENDERER)));
+    LOG(INFO) << boost::format("OpenGL on screen renderer: %1%") % (char*)(glGetString(GL_RENDERER));
 
     // Create a place to render offscreen pixesl
     if (screenState & OFF_SCREEN) {

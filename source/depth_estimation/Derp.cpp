@@ -12,7 +12,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/depth_estimation/TemporalBilateralFilter.h"
 #include "source/util/ImageUtil.h"
@@ -33,7 +33,7 @@ void plotMatches(
     return;
   }
 
-  LOG(INFO) << folly::sformat("Plotting matches for {}...", kDebugPlotMatchDst);
+  LOG(INFO) << boost::format("Plotting matches for %1%...") %kDebugPlotMatchDst;
 
   const int dstIdx = pyramidLevel.findDstIdx(kDebugPlotMatchDst);
   const Camera& camDst = pyramidLevel.rigDst[dstIdx];
@@ -44,12 +44,12 @@ void plotMatches(
   CHECK(
       0 <= kDebugPlotMatchX && kDebugPlotMatchX < xSize && 0 <= kDebugPlotMatchY &&
       kDebugPlotMatchY < ySize)
-      << folly::sformat(
-             "debug coords({}, {}) out of bounds: ({}, {})",
-             kDebugPlotMatchX,
-             kDebugPlotMatchY,
-             xSize,
-             ySize);
+      << boost::format(
+             "debug coords(%1%, %2%) out of bounds: (%3%, %4%)") 
+             % kDebugPlotMatchX
+             % kDebugPlotMatchY
+             % xSize
+             % ySize;
 
   for (int srcIdx = 0; srcIdx < int(pyramidLevel.rigSrc.size()); ++srcIdx) {
     const Camera& camSrc = pyramidLevel.rigSrc[srcIdx];
@@ -273,7 +273,7 @@ void computeBruteForceDisparity(
   cv::Mat_<float>& dstConfidences = pyramidLevel.dstConfidence(dstIdx);
 
   LOG(INFO) << "Computing initial costs at " << pyramidLevel.sizeLevel
-            << folly::sformat(" ({})", pyramidLevel.rigDst[dstIdx].id);
+      << boost::format(" (%1%)") % pyramidLevel.rigDst[dstIdx].id;
 
   std::vector<float> disparities(kNumDepths);
   const float minDisparity = 1.0f / maxDepthMeters;
@@ -333,8 +333,7 @@ void computeBruteForceDisparity(
       if (bestDisparityIdx == -1) {
         // This can only happen if we're outside the overlapping area when we
         // have partial coverage or due to noise in foreground masks
-        std::string warning = folly::sformat(
-            "Insufficient coverage at {} ({}, {}) ", pyramidLevel.rigDst[dstIdx].id, x, y);
+        std::string warning = (boost::format("Insufficient coverage at %1% (%2%, %3%) ") % pyramidLevel.rigDst[dstIdx].id % x % y).str();
         CHECK(partialCoverage || useForegroundMasks) << warning;
 
         const std::string partialCoverageFailure = "due to partial coverage";
@@ -497,8 +496,8 @@ void pingPong(PyramidLevel<PixelType>& pyramidLevel, const int iterations, const
     }
 
     for (int it = 1; it <= iterations; ++it) {
-      LOG(INFO) << folly::sformat(
-          "-- ping pong: iter {}/{}, {}", it, iterations, pyramidLevel.rigDst[dstIdx].id);
+      LOG(INFO) << boost::format(
+          "-- ping pong: iter %1%/%2%, %3%") % it % iterations % pyramidLevel.rigDst[dstIdx].id;
       const int radius = kSearchWindowRadius;
       ThreadPool threadPool(numThreads);
 
@@ -531,7 +530,7 @@ void pingPong(PyramidLevel<PixelType>& pyramidLevel, const int iterations, const
       const int countFov = cv::countNonZero(fovMask);
       const int count = cv::countNonZero(changed);
       const float changedPct = 100.0f * count / countFov;
-      LOG(INFO) << std::fixed << std::setprecision(2) << folly::sformat("changed: {}%", changedPct);
+      LOG(INFO) << std::fixed << std::setprecision(2) << boost::format("changed: %1%%") % changedPct;
     }
   }
 }
@@ -852,7 +851,7 @@ void randomProposals(
   }
 
   for (int dstIdx = 0; dstIdx < int(pyramidLevel.rigDst.size()); ++dstIdx) {
-    LOG(INFO) << folly::sformat("-- random proposals: {}", pyramidLevel.rigDst[dstIdx].id);
+    LOG(INFO) << boost::format("-- random proposals: %1%") % pyramidLevel.rigDst[dstIdx].id;
     ThreadPool threadPool(numThreads);
     const cv::Size size = pyramidLevel.dstDisparity(dstIdx).size();
     for (int y = kSearchWindowRadius; y < size.height - kSearchWindowRadius; ++y) {
@@ -923,7 +922,7 @@ void saveResults(
     const bool saveDebugImages,
     const std::string& outputFormatsIn) {
   if (saveDebugImages) {
-    LOG(INFO) << folly::sformat("Saving debug images for pyramid level {}...", pyramidLevel.level);
+    LOG(INFO) << boost::format("Saving debug images for pyramid level %1%...") % pyramidLevel.level;
     pyramidLevel.saveDebugImages();
   }
 
@@ -1016,7 +1015,7 @@ void processLevel(
     const int mismatchesStartLevel,
     const bool doBilateralFilter,
     const int threads) {
-  LOG(INFO) << folly::sformat("Processing {} level {}", pyramidLevel.frameName, pyramidLevel.level);
+  LOG(INFO) << boost::format("Processing %1% level %2%") % pyramidLevel.frameName % pyramidLevel.level;
   reprojectColors(pyramidLevel, threads);
   preprocessLevel(pyramidLevel, minDepthM, maxDepthM, partialCoverage, useForegroundMasks, threads);
   randomProposals(pyramidLevel, numRandomProposals, minDepthM, maxDepthM, threads, outputRoot);

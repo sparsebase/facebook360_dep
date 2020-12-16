@@ -30,7 +30,7 @@ const char* kUsage = R"(
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
-
+#include <boost/format.hpp>
 #include "source/conversion/PointCloudUtil.h"
 #include "source/util/Camera.h"
 #include "source/util/ImageUtil.h"
@@ -64,10 +64,10 @@ void rescaleCameras(Camera::Rig& rig) {
       int height = std::round(FLAGS_width * cam.resolution.y() / float(cam.resolution.x()));
       height += height % 2; // force even number of rows
       cam = cam.rescale({FLAGS_width, height});
-    }
+	}
 
-    LOG(INFO) << folly::sformat(
-        "{} output resolution: {}x{}", cam.id, cam.resolution.x(), cam.resolution.y());
+    LOG(INFO) << boost::format(
+        "%1% output resolution: %2%x%3%") % cam.id % cam.resolution.x() % cam.resolution.y();
   }
 }
 
