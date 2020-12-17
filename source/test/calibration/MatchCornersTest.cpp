@@ -7,11 +7,11 @@
 
 #include <stdlib.h>
 #include <string>
+#include <boost/format.hpp>
 
 #include <gtest/gtest.h>
 #include <boost/filesystem.hpp>
 #include <folly/FileUtil.h>
-#include <folly/Format.h>
 #include <folly/json.h>
 
 #include "source/calibration/Calibration.h"
@@ -117,9 +117,9 @@ TEST(MatchCornersTest, TestTransformationDetection) {
   FLAGS_color = boost::filesystem::unique_path("test_%%%%%%").string();
   FLAGS_frame = "000000";
   const std::string matches_basenane = boost::filesystem::unique_path("matches_%%%%%%").string();
-  FLAGS_matches = folly::sformat("{}/{}.json", FLAGS_color, matches_basenane);
+  FLAGS_matches = (boost::format("%1%/%2%.json") % FLAGS_color % matches_basenane).str();
   const std::string rig_basenane = boost::filesystem::unique_path("rig_%%%%%%").string();
-  FLAGS_rig_in = folly::sformat("{}/{}.json", FLAGS_color, rig_basenane);
+  FLAGS_rig_in = (boost::format("%1%/%2%.json") % FLAGS_color % rig_basenane).str();
   FLAGS_min_features = 0;
 
   static const int squareDim = 300;
@@ -167,10 +167,10 @@ TEST(MatchCornersTest, TestTransformationDetection) {
   image = rotateImage(image, angle);
   image = translate(image, tX, tY);
 
-  std::string testPath = folly::sformat("{}/cam/", FLAGS_color);
+  std::string testPath = (boost::format("%1%/cam/") % FLAGS_color).str();
   filesystem::create_directories(testPath);
 
-  cv_util::imwriteExceptionOnFail(folly::sformat("{}/{}.png", testPath, FLAGS_frame), image);
+  cv_util::imwriteExceptionOnFail((boost::format("%1%/%2%.png") % testPath % FLAGS_frame).str(), image);
   Camera::saveRig(FLAGS_rig_in, rig);
 
   matchCorners();
@@ -188,12 +188,12 @@ TEST(MatchCornersTest, TestTransformationDetection) {
         bestTrueCorner = trueCorner;
       }
     }
-    CHECK_LE(bestDistanceSq, toleranceSq) << folly::sformat(
-        "No corners near ({}, {}). Closest found: ({}, {})",
-        corner.x(),
-        corner.y(),
-        bestTrueCorner.x(),
-        bestTrueCorner.y());
+    CHECK_LE(bestDistanceSq, toleranceSq) << boost::format(
+        "No corners near (%1%, %2%). Closest found: (%3%, %4%)")
+        % corner.x()
+        % corner.y()
+        % bestTrueCorner.x()
+        % bestTrueCorner.y();
   }
 
   filesystem::remove_all(FLAGS_color);

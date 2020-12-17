@@ -20,7 +20,7 @@ const char* kUsage = R"(
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
-
+#include <boost/format.hpp>
 #include "source/render/BackgroundSubtractionUtil.h"
 #include "source/util/CvUtil.h"
 #include "source/util/SystemUtil.h"
@@ -144,9 +144,9 @@ int main(int argc, char* argv[]) {
   LOG(INFO) << "Press any key to exit.";
   cv::waitKey(0);
 
-  LOG(INFO) << folly::sformat("{}={}", blurFlag, trackVar.getBlur());
-  LOG(INFO) << folly::sformat("{}={:.3e}", threshFlag, trackVar.getThreshold());
-  LOG(INFO) << folly::sformat("{}={}", closingFlag, trackVar.getClosing());
+  LOG(INFO) << boost::format("%1%=%2%") % blurFlag % trackVar.getBlur();
+  LOG(INFO) << boost::format("%1%=%2$.3e") % threshFlag % trackVar.getThreshold();
+  LOG(INFO) << boost::format("%1%=%2%") % closingFlag % trackVar.getClosing();
 
   return EXIT_SUCCESS;
 }

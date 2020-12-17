@@ -14,7 +14,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 DECLARE_bool(help);
 DECLARE_bool(helpshort);
@@ -28,7 +28,7 @@ void terminateHandler() {
     try {
       rethrow_exception(exptr);
     } catch (std::exception& ex) {
-      LOG(FATAL) << folly::sformat("Terminated with exception: {}", ex.what());
+      LOG(FATAL) << boost::format("Terminated with exception: %1%") % ex.what();
     } catch (...) {
       LOG(FATAL) << "Terminated with unknown exception";
     }
@@ -90,7 +90,7 @@ void logFlags() {
   LOG(INFO) << "Flags:";
   for (const auto& flag : flags) {
     if (isSubstring(flag.filename, substring)) {
-      LOG(INFO) << folly::sformat("--{:<*} = {}", padding, flag.name, flag.current_value);
+      LOG(INFO) << std::left << std::setw(30) << flag.name << " = " << flag.current_value;
     }
   }
 }

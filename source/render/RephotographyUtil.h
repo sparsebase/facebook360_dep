@@ -9,7 +9,7 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include <folly/dynamic.h>
+#include <boost/format.hpp>
 
 #include "source/util/CvUtil.h"
 
@@ -119,11 +119,11 @@ inline cv::Mat_<T> computeScoreMap(
 }
 
 inline std::string formatResults(const cv::Scalar& scoreAvg) {
-  return folly::sformat(
-      "R {:.2f}%, G {:.2f}%, B {:.2f}%",
-      100 * scoreAvg.val[2],
-      100 * scoreAvg.val[1],
-      100 * scoreAvg.val[0]);
+    return (boost::format(
+        "R %1%$.2f%, G %2%$.2f%, B %3%$.2f%")
+        % (100 * scoreAvg.val[2])
+        % (100 * scoreAvg.val[1])
+        % (100 * scoreAvg.val[0])).str();
 }
 
 template <typename T, typename U>

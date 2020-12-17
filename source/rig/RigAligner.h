@@ -6,7 +6,7 @@
  */
 
 #include <ceres/ceres.h>
-
+#include <boost/format.hpp>
 #include "source/util/Camera.h"
 
 namespace fb360_dep {
@@ -165,11 +165,11 @@ Camera::Rig alignRig(
 
   solve(problem);
 
-  LOG(INFO) << folly::sformat(
-      "New rotation values: {} {} {}", rotation[0], rotation[1], rotation[2]);
-  LOG(INFO) << folly::sformat(
-      "New translation values: {} {} {}", translation[0], translation[1], translation[2]);
-  LOG(INFO) << folly::sformat("New scale: {}", scale.factor());
+  LOG(INFO) << boost::format(
+      "New rotation values: %1% %2% %3%") % rotation[0] % rotation[1] % rotation[2];
+  LOG(INFO) << boost::format(
+      "New translation values: %1% %2% %3%") % translation[0] % translation[1] %translation[2];
+  LOG(INFO) << boost::format("New scale: %1%") % scale.factor();
   const Camera::Rig transformedRig = transformRig(rig, rotation, translation, scale);
   return transformedRig;
 }

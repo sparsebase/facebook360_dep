@@ -8,7 +8,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/rig/RigAligner.h"
 #include "source/util/Camera.h"
@@ -37,7 +37,7 @@ void compareRigs(const Camera::Rig& rig, const Camera::Rig& reference) {
   double averageFocalDiff = 0;
   for (const Camera& camera : rig) {
     const Camera& ref = Camera::findCameraById(camera.id, reference);
-    LOG(INFO) << folly::sformat("{}:", camera.id);
+    LOG(INFO) << camera.id;
 
     double currentPositionDiff = (camera.position - ref.position).norm();
     double currentForwardDiff = acos(camera.forward().dot(ref.forward()));
@@ -51,21 +51,21 @@ void compareRigs(const Camera::Rig& rig, const Camera::Rig& reference) {
     averagePrincipalDiff += currentPrincipalDiff;
     averageFocalDiff += currentFocalDiff;
 
-    LOG(INFO) << folly::sformat("- position diff: {}", currentPositionDiff);
-    LOG(INFO) << folly::sformat("- forward diff (radians): {}", currentForwardDiff);
-    LOG(INFO) << folly::sformat("- up diff (radians): {}", currentUpDiff);
-    LOG(INFO) << folly::sformat("- principal diff: {}", currentPrincipalDiff);
-    LOG(INFO) << folly::sformat("- focal diff: {}", currentFocalDiff);
+    LOG(INFO) << "- position diff: " << currentPositionDiff;
+    LOG(INFO) << "- forward diff (radians): " << currentForwardDiff;
+    LOG(INFO) << "- up diff (radians): " <<  currentUpDiff;
+    LOG(INFO) << "- principal diff: " <<  currentPrincipalDiff;
+    LOG(INFO) << "- focal diff: " << currentFocalDiff;
   }
 
   LOG(INFO) << "Average:";
-  LOG(INFO) << folly::sformat("- position diff: {}", averagePositionDiff / rig.size());
-  LOG(INFO) << folly::sformat("- forward diff (radians): {}", averageForwardDiff / rig.size());
+  LOG(INFO) << "- position diff: " << averagePositionDiff / rig.size();
+  LOG(INFO) << "- forward diff (radians): " <<  averageForwardDiff / rig.size();
 
-  LOG(INFO) << folly::sformat("- up diff (radians): {}", averageUpDiff / rig.size());
+  LOG(INFO) << "- up diff (radians): " << averageUpDiff / rig.size();
 
-  LOG(INFO) << folly::sformat("- principal diff: {}", averagePrincipalDiff / rig.size());
-  LOG(INFO) << folly::sformat("- focal diff: {}", averageFocalDiff / rig.size());
+  LOG(INFO) << "- principal diff: " << averagePrincipalDiff / rig.size();
+  LOG(INFO) << "- focal diff: " << averageFocalDiff / rig.size();
 }
 
 int main(int argc, char* argv[]) {

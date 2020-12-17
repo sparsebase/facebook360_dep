@@ -9,7 +9,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/gpu/GlUtil.h"
 #include "source/gpu/GlfwUtil.h"
@@ -113,7 +113,7 @@ class OffscreenWindow : public GlWindow {
     for (int iFrame = 0; iFrame < numFrames; ++iFrame) {
       const std::string frameName =
           image_util::intToStringZeroPad(iFrame + std::stoi(FLAGS_first), 6);
-      LOG(INFO) << folly::sformat("Processing frame {}...", frameName);
+      LOG(INFO) << boost::format("Processing frame %1%...") % frameName;
 
       LOG(INFO) << "Loading color and disparity images...";
 
@@ -139,7 +139,7 @@ class OffscreenWindow : public GlWindow {
           }
         }
 
-        LOG(INFO) << folly::sformat("Processing {} - {}...", frameName, camId);
+        LOG(INFO) << boost::format("Processing %1% - %1%...") % frameName % camId;
         const Eigen::Vector3f center = rig[i].position.cast<float>();
 
         std::vector<cv::Mat_<PixelType>> cubesRef =
@@ -162,15 +162,15 @@ class OffscreenWindow : public GlWindow {
             FLAGS_method, cubesRefColorNoAlpha, cubesRenderColorNoAlpha, FLAGS_stat_radius);
 
         const cv::Scalar avgScore = rephoto_util::averageScore(scoreMap, mask);
-        LOG(INFO) << folly::sformat(
-            "{} {}: {}", camId, FLAGS_method, rephoto_util::formatResults(avgScore));
+        LOG(INFO) << boost::format(
+            "%1% %2%: %3%") % camId % FLAGS_method % rephoto_util::formatResults(avgScore);
         frameScore += avgScore;
 
         // Plot results
         const cv::Mat_<cv::Vec3b> plot =
             rephoto_util::stackResults(cubesRef, cubesRender, scoreMap, avgScore, mask);
         const std::string filename =
-            folly::sformat("{}/{}/{}.png", rephotoDir.string(), camId, frameName);
+            (boost::format("%1%/%2%/%3%.png") % rephotoDir.string() % camId % frameName).str();
         cv_util::imwriteExceptionOnFail(filename, plot);
       }
 
@@ -178,16 +178,16 @@ class OffscreenWindow : public GlWindow {
       frameScore.val[0] /= n;
       frameScore.val[1] /= n;
       frameScore.val[2] /= n;
-      LOG(INFO) << folly::sformat(
-          "{} average {}: {}", frameName, FLAGS_method, rephoto_util::formatResults(frameScore));
+      LOG(INFO) << boost::format(
+          "%1% average %2%: %3%") % frameName % FLAGS_method % rephoto_util::formatResults(frameScore);
       totalScore += frameScore;
     }
 
     totalScore.val[0] /= numFrames;
     totalScore.val[1] /= numFrames;
     totalScore.val[2] /= numFrames;
-    LOG(INFO) << folly::sformat(
-        "TOTAL average {}: {}", FLAGS_method, rephoto_util::formatResults(totalScore));
+    LOG(INFO) << boost::format(
+        "TOTAL average %1%: %2%") % FLAGS_method % rephoto_util::formatResults(totalScore);
   }
 };
 

@@ -182,16 +182,16 @@ void plotDstPointInSrc(
   const SaveType green = cv_util::createBGR<SaveType>(0, 1, 0);
   srcColorCopy(ptSrc.y(), ptSrc.x()) = green;
 
-  const std::string filename = folly::sformat(
-      "{}/{}_{}_x={}_y={}->{}_x={:.2f}_y={:.2f}.png",
-      outputDir.string(),
-      prefix,
-      camDst.id,
-      x,
-      y,
-      camSrc.id,
-      ptSrc.x(),
-      ptSrc.y());
+  const std::string filename = (boost::format(
+      "%1%/%2%_%3%_x=%4%_y=%5%->%6%_x=%7$.2f_y=%8$.2f.png")
+      % outputDir.string()
+      % prefix
+      % camDst.id
+      % x
+      % y
+      % camSrc.id
+      % ptSrc.x()
+      % ptSrc.y()).str();
   cv::imwrite(filename, srcColorCopy);
 }
 
@@ -303,8 +303,8 @@ filesystem::path genFilename(
     const std::string& camId,
     const std::string& frameName,
     const std::string& extension) {
-  return folly::sformat(
-      "{}/{}.{}", getImageDir(dir, imageType, level, camId).string(), frameName, extension);
+  return (boost::format(
+      "%1%/%2%.%3%") % getImageDir(dir, imageType, level, camId).string() % frameName % extension).str();
 }
 
 void createLevelOutputDirs(

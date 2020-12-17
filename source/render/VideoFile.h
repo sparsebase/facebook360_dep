@@ -11,7 +11,7 @@
 #include <mutex>
 
 #include "source/util/FilesystemUtil.h"
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/gpu/GlUtil.h"
 #include "source/mesh_stream/StripedFile.h"
@@ -38,7 +38,7 @@ struct VideoFile {
     }
     CHECK(frames.size()) << "no frames in catalog " << catalogName;
     sort(frames.begin(), frames.end());
-    LOG(INFO) << folly::sformat("{} frames found", frames.size());
+    LOG(INFO) << boost::format("%1% frames found") % frames.size();
   }
 
   int getFront() const {

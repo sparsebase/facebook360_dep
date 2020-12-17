@@ -16,7 +16,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/render/BoundingVolumeHierarchy.h"
 #include "source/render/PerlinNoise.h"
@@ -631,7 +631,7 @@ void renderCamerasThreaded(
   std::vector<cv::Mat_<cv::Vec3f>> images(cameras.size(), cv::Mat_<cv::Vec3f>());
   std::vector<cv::Mat_<float>> depthMaps(cameras.size(), cv::Mat_<float>());
   for (int i = 0; i < int(cameras.size()); ++i) {
-    LOG(INFO) << folly::sformat("------ rendering camera {}", i);
+    LOG(INFO) << boost::format("------ rendering camera %1%") % i;
     renderThreads.emplace_back(
         renderCamera,
         std::ref(cameras[i]),

@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <folly/Format.h>
 
 #include "source/util/CvUtil.h"
 #include "source/util/ThreadPool.h"
@@ -54,7 +53,7 @@ cv::Mat_<bool> generateForegroundMask(
   const int count = cv::countNonZero(foregroundMask);
   const float fgPct = 100.0f * count / (foregroundMask.cols * foregroundMask.rows);
   LOG(INFO) << std::fixed << std::setprecision(2)
-            << folly::sformat("foreground amount: {}%", fgPct);
+            << boost::format("foreground amount: %1%%") % fgPct;
   return foregroundMask;
 }
 
@@ -73,7 +72,7 @@ std::vector<cv::Mat_<bool>> generateForegroundMasks(
   ThreadPool threadPool(numThreads);
   for (int i = 0; i < int(templateColors.size()); ++i) {
     threadPool.spawn([&, i] {
-      LOG(INFO) << folly::sformat("{} of {}...", i + 1, templateColors.size());
+      LOG(INFO) << boost::format("%1% of %2%...") % (i + 1) % templateColors.size();
       masks[i] = templateColors[i].empty()
           ? allPass
           : generateForegroundMask<T, U>(

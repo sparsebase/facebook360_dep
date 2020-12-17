@@ -8,7 +8,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/util/Camera.h"
 #include "source/util/ImageUtil.h"
@@ -96,7 +96,7 @@ void dumpOverlaps(
 
   // Loop through disparities
   for (int d = 0; d < numDisps; ++d) {
-    LOG(INFO) << folly::sformat("Depth {} of {}...", (d + 1), numDisps);
+    LOG(INFO) << boost::format("Depth %1% of %2%...") % (d + 1) % numDisps;
     threadPool.spawn([&, d] {
       const float disparity = probeDisparity(d, numDisps, minDisparity, maxDisparity);
       for (const Camera& camDst : rigDst) {
@@ -115,7 +115,7 @@ void dumpOverlaps(
 
         // Pad filename with zeros so they are saved in lexicographical order
         const std::string filename =
-            folly::sformat("{}/{}/{:05}_cm.png", outputDir.string(), camDst.id, int(depthCm));
+            (boost::format("%1%/%2%/%3$05i_cm.png") % outputDir.string() % camDst.id % int(depthCm)).str();
         cv_util::imwriteExceptionOnFail(filename, 255.0f * colorDst);
       }
     });

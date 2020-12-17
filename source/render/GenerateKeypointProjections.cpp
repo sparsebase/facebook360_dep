@@ -8,7 +8,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <opencv2/opencv.hpp>
-
+#include <boost/format.hpp>
 #include "source/calibration/Calibration.h"
 #include "source/calibration/FeatureMatcher.h"
 #include "source/util/Camera.h"
@@ -104,7 +104,7 @@ int main(int argc, char* argv[]) {
       cv::Mat_<cv::Vec4f> blend;
       cv::addWeighted(images[c0Idx], 1, keypointProjection, 0.6, 0, blend);
       const std::string fn =
-          folly::sformat("{}/{}_{}.png", FLAGS_output_dir, rig[c0Idx].id, rig[c1Idx].id);
+          (boost::format("%1%/%2%_%3%.png") % FLAGS_output_dir % rig[c0Idx].id % rig[c1Idx].id).str();
       cv_util::imwriteExceptionOnFail(fn, 255.0f * blend);
     }
   }

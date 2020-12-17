@@ -10,7 +10,7 @@
 #include <opencv2/core.hpp>
 
 #include <folly/FileUtil.h>
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/isp/CameraIsp.h"
 #include "source/isp/DngTags.h"
@@ -136,7 +136,7 @@ bool writeDng(
     const filesystem::path& rawImageFilename,
     const filesystem::path& outputFilename,
     CameraIsp& cameraIsp) {
-  LOG(INFO) << folly::sformat("Writing: {}", outputFilename.string()) << std::endl;
+  LOG(INFO) << boost::format("Writing: %1%") % outputFilename.string() << std::endl;
   // - sanity check
   CHECK_EQ(rawImageFilename.extension(), ".raw");
   int outputBitsPerPixel = 8 * sizeof(T);
@@ -168,7 +168,7 @@ bool writeDng(
 
   FILE* fDng = fopen(outputFilename.string().c_str(), "w");
   if (fDng == NULL) {
-    LOG(ERROR) << folly::sformat("Failed to open file: {}", outputFilename.string()) << std::endl;
+    LOG(ERROR) << boost::format("Failed to open file: %1%") % outputFilename.string() << std::endl;
     return false;
   }
 

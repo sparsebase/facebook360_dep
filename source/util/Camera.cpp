@@ -9,7 +9,7 @@
 
 #include <unsupported/Eigen/Polynomials>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 namespace fb360_dep {
 
@@ -282,7 +282,7 @@ const Camera& Camera::findCameraById(const std::string id, const Camera::Rig& ri
       return camera;
     }
   }
-  LOG(FATAL) << folly::sformat("Camera id {} not found", id);
+  LOG(FATAL) << boost::format("Camera id %1 not found") % id;
 }
 
 #ifndef SUPPRESS_RIG_IO

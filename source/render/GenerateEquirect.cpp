@@ -12,7 +12,7 @@
 #include <glog/logging.h>
 #include <opencv2/opencv.hpp>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/rig/RigTransform.h"
 #include "source/util/Camera.h"
@@ -58,7 +58,7 @@ void saveImage(const cv::Mat_<cv::Vec4f> eqr, const double depth) {
   size_t width = eqr.cols;
 
   // Add text to image showing current depth
-  const std::string depthStr = folly::sformat("{:.2f}", depth);
+  const std::string depthStr = (boost::format("%1$.2f") % depth).str();
   const cv::Point2f textPos((85.0f / 100.0f) * width, (6.0f / 100.0f) * height);
   const int textFont = cv::FONT_HERSHEY_PLAIN;
   const double textScale = 2;
@@ -70,7 +70,7 @@ void saveImage(const cv::Mat_<cv::Vec4f> eqr, const double depth) {
 
   // Pad filename with zeros so they are saved in lexicographical order
   const std::string filename =
-      folly::sformat("{}/{:05}_cm.png", equirectDir.string(), int(depth * 100));
+      (boost::format("%1%/%2$05i_cm.png") % equirectDir.string() % int(depth * 100)).str();
   cv_util::imwriteExceptionOnFail(filename, 255.0f * eqr);
 }
 
@@ -268,7 +268,7 @@ int main(int argc, char* argv[]) {
       const float disp =
           FLAGS_num_depths == 1 ? dispMin : fraction * dispMin + (1 - fraction) * dispMax;
       const float depth = 1.0f / disp;
-      LOG(INFO) << folly::sformat("Depth {} of {}...", (FLAGS_num_depths - i), FLAGS_num_depths);
+      LOG(INFO) << boost::format("Depth %1% of %2%...") % (FLAGS_num_depths - i) % FLAGS_num_depths;
 
       Image equirectImage;
       if (FLAGS_crop_equirect) {

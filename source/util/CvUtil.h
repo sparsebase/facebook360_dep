@@ -16,7 +16,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/util/FilesystemUtil.h"
 #include "source/util/MathUtil.h"
@@ -175,7 +175,7 @@ inline float maxPixelValueFromCvDepth(int cvDepth) {
   } else if (cvDepth == CV_32F) {
     return 1.0f;
   } else {
-    LOG(FATAL) << folly::sformat("Depth not supported: {}", cvDepth);
+    LOG(FATAL) << boost::format("Depth not supported: %1%") % cvDepth;
     return 0.0f;
   }
 }

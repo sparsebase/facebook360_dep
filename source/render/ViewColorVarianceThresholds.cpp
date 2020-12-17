@@ -22,7 +22,7 @@ const char* kUsage = R"(
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
-
+#include <boost/format.hpp>
 #include "source/depth_estimation/DerpUtil.h"
 #include "source/util/CvUtil.h"
 #include "source/util/SystemUtil.h"
@@ -128,8 +128,8 @@ int main(int argc, char* argv[]) {
   LOG(INFO) << "Press any key to exit.";
   cv::waitKey(0);
 
-  LOG(INFO) << folly::sformat("{}={:.3e}", varLowFlag, trackVar.getVarNoiseFloor());
-  LOG(INFO) << folly::sformat("{}={:.3e}", varHighFlag, trackVar.getVarHighThresh());
+  LOG(INFO) << boost::format("%1%=%2$.3e") % varLowFlag % trackVar.getVarNoiseFloor();
+  LOG(INFO) << boost::format("%1%=%2$.3e") % varHighFlag % trackVar.getVarHighThresh();
 
   return EXIT_SUCCESS;
 }

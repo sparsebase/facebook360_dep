@@ -17,11 +17,11 @@ static inline const std::vector<filesystem::path> checkAndGetSortedFiles(
     const Camera::Rig& rig) {
   CHECK_GT(rig.size(), 0);
   filesystem::path camDir = imageDir / rig[0].id;
-  CHECK(filesystem::exists(camDir)) << folly::sformat("No folder found at {}", camDir.string());
+  CHECK(filesystem::exists(camDir)) << boost::format("No folder found at %1%") % camDir.string();
   const bool includeHidden = false;
   const std::vector<filesystem::path> sortedFiles =
       filesystem::getFilesSorted(camDir, includeHidden);
-  CHECK_GT(sortedFiles.size(), 0) << folly::sformat("No files found in {}", camDir.string());
+  CHECK_GT(sortedFiles.size(), 0) << boost::format("No files found in %1%") % camDir.string();
   return sortedFiles;
 }
 

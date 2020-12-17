@@ -12,7 +12,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/util/SystemUtil.h"
 
@@ -55,17 +55,17 @@ Camera::Rig randomizeRig(Camera::Rig rig, int seed) {
   const bool applyInReverse = true;
   rig = transformRig(rig, randomRotation, randomTranslation, randomScale, applyInReverse);
   if (!FLAGS_transformed_rig.empty()) {
-    LOG(INFO) << folly::sformat("Saving randomized rig to {}", FLAGS_transformed_rig);
+    LOG(INFO) << boost::format("Saving randomized rig to %1%") % FLAGS_transformed_rig;
     Camera::saveRig(FLAGS_transformed_rig, rig);
   }
-  LOG(INFO) << folly::sformat(
-      "Random rotation values: {} {} {}", randomRotation[0], randomRotation[1], randomRotation[2]);
-  LOG(INFO) << folly::sformat(
-      "Random translation values: {} {} {}",
-      randomTranslation[0],
-      randomTranslation[1],
-      randomTranslation[2]);
-  LOG(INFO) << folly::sformat("Random scale values: {}", randomScale.factor());
+  LOG(INFO) << boost::format(
+      "Random rotation values: %1% %2% %3%") % randomRotation[0] % randomRotation[1] % randomRotation[2];
+  LOG(INFO) << boost::format(
+      "Random translation values: %1% %2% %3%") 
+      % randomTranslation[0]
+      % randomTranslation[1]
+      % randomTranslation[2];
+  LOG(INFO) << boost::format("Random scale values: %1%") % randomScale.factor();
   return rig;
 }
 

@@ -8,11 +8,11 @@
 #include "source/rig/AlignPointCloud.h"
 
 #include <boost/algorithm/string/split.hpp>
+#include <boost/format.hpp>
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
 #include <folly/FileUtil.h>
-#include <folly/Format.h>
 #include <folly/dynamic.h>
 #include <folly/json.h>
 
@@ -62,7 +62,7 @@ void saveDisparityImages(
     const filesystem::path& outputDir) {
   filesystem::create_directories(outputDir);
   for (ssize_t i = 0; i < ssize(rig); ++i) {
-    const std::string imageFilename = folly::sformat("{}/{}.tif", outputDir.string(), rig[i].id);
+    const std::string imageFilename = (boost::format("%1%/%2%.tif") % outputDir.string() % rig[i].id).str();
     cv_util::imwriteExceptionOnFail(imageFilename, projectedPointClouds[i].disparityImage);
   }
 }
@@ -73,7 +73,7 @@ void saveDebugImages(
     const filesystem::path& outputDir) {
   filesystem::create_directories(outputDir);
   for (ssize_t i = 0; i < ssize(rig); ++i) {
-    const std::string imageFilename = folly::sformat("{}/{}.tif", outputDir.string(), rig[i].id);
+    const std::string imageFilename = (boost::format("%1%/%2%.tif") % outputDir.string() % rig[i].id).str();
     cv_util::imwriteExceptionOnFail(imageFilename, projectedPointClouds[i].image);
   }
 }
@@ -134,8 +134,8 @@ void saveLidarMatches(
 
       allMatches.push_back(matchData);
     }
-    std::string filename = folly::sformat("{}/{}.json", outputDir.string(), rig[i].id);
-    LOG(INFO) << folly::sformat("Saving matches to file: {}", filename);
+    std::string filename = (boost::format("%1%/%2%.json") % outputDir.string() % rig[i].id).str();
+    LOG(INFO) << boost::format("Saving matches to file: %1%") % filename;
     CHECK(folly::writeFile(folly::toPrettyJson(allMatches), filename.c_str()));
   }
 }
@@ -162,7 +162,7 @@ void renderReprojections(
           green,
           2);
     }
-    std::string errorsFile = folly::sformat("{}/{}.png", outputDir.string(), rig[i].id);
+    std::string errorsFile = (boost::format("%1%/%2%.png") % outputDir.string() % rig[i].id).str();
     cv_util::imwriteExceptionOnFail(errorsFile, images[i]);
   }
 }
@@ -192,13 +192,13 @@ std::vector<FeatureList> generateFeatures(const Camera::Rig& rig, const PointClo
     Camera lidarCamera = rig[i];
     const Image& lidarImage = extractSingleChannelImage(projectedPointClouds[i].image);
 
-    lidarCamera.id = folly::sformat("{}_lidar", rig[i].id);
+    lidarCamera.id = (boost::format("%1%_lidar") % rig[i].id).str();
     useNearest = true; // don't interpolate the lidar projection
     std::vector<Keypoint> lidarCorners = findCorners(lidarCamera, lidarImage, useNearest);
 
     Overlap overlap =
         findMatches(images[i], imageCorners, rig[i], lidarImage, lidarCorners, lidarCamera);
-    LOG(INFO) << folly::sformat("Found {} matches", overlap.matches.size());
+    LOG(INFO) << boost::format("Found %1% matches") % overlap.matches.size();
 
     FeatureList camFeatures = createFeatureList(
         imageCorners, lidarCorners, overlap, rig[i].id, projectedPointClouds[i].coordinateImage);
@@ -244,13 +244,13 @@ void logMedianErrors(const Camera::Rig& rig, const std::vector<FeatureList>& all
   std::vector<Camera::Real> medians(ssize(errors));
   for (ssize_t i = 0; i < ssize(errors); ++i) {
     medians[i] = calcPercentile(errors[i]);
-    LOG(INFO) << folly::sformat(
-        "{} median: {} 25%: {} 90%: {} 95%: {}",
-        rig[i].id,
-        calcPercentile(errors[i]),
-        calcPercentile(errors[i], 0.25),
-        calcPercentile(errors[i], 0.90),
-        calcPercentile(errors[i], 0.95));
+    LOG(INFO) << boost::format(
+        "%1% median: %2% 25%: %3% 90%: %4% 95%: %5%")
+        % rig[i].id
+        % calcPercentile(errors[i])
+        % calcPercentile(errors[i], 0.25)
+        % calcPercentile(errors[i], 0.90)
+        % calcPercentile(errors[i], 0.95);
   }
 }
 
@@ -266,20 +266,20 @@ std::vector<FeatureList> removeOutliers(
       cameraErrors.push_back(residual);
     }
     const double median = calcPercentile(cameraErrors);
-    LOG(INFO) << folly::sformat("Median {} {}", rig[i].id, median);
+    LOG(INFO) << boost::format("Median %1% %2%") % rig[i].id % median;
     for (ssize_t j = 0; j < ssize(cameraErrors); ++j) {
       if (cameraErrors[j] < FLAGS_outlier_factor * median) {
         cameraFeatures.push_back(allFeatures[i][j]);
       }
     }
 
-    LOG(INFO) << folly::sformat(
-        "{} median unfiltered: {} outlier threshold: {} unfiltered match count: {} accepted matches count: {}",
-        rig[i].id,
-        median,
-        FLAGS_outlier_factor * median,
-        cameraErrors.size(),
-        cameraFeatures.size());
+    LOG(INFO) << boost::format(
+        "%1% median unfiltered: %2% outlier threshold: %3% unfiltered match count: %4% accepted matches count: %5%")
+        % rig[i].id
+        % median
+        % (FLAGS_outlier_factor * median)
+        % cameraErrors.size()
+        % cameraFeatures.size();
     inlyingFeatures.push_back(cameraFeatures);
   }
 
@@ -309,7 +309,7 @@ Camera::Rig alignPointCloud(
   for (int i = 0; i < int(rig.size()); ++i) {
     if (!includeCamList.empty() &&
         std::find(includeCams.begin(), includeCams.end(), rig[i].id) == includeCams.end()) {
-      LOG(INFO) << folly::sformat("Excluding camera {} from calibration ", rig[i].id);
+      LOG(INFO) << boost::format("Excluding camera %1% from calibration ") % rig[i].id;
       continue;
     }
     alignmentCameras++;
@@ -343,11 +343,11 @@ Camera::Rig alignPointCloud(
 
   solve(problem);
 
-  LOG(INFO) << folly::sformat(
-      "New rotation values: {} {} {}", rotation[0], rotation[1], rotation[2]);
-  LOG(INFO) << folly::sformat(
-      "New translation values: {} {} {}", translation[0], translation[1], translation[2]);
-  LOG(INFO) << folly::sformat("New scale: {}", scale.factor());
+  LOG(INFO) << boost::format(
+      "New rotation values: %1% %2% %3%") % rotation[0] % rotation[1] % rotation[2];
+  LOG(INFO) << boost::format(
+      "New translation values: %1% %2% %3%") % translation[0] % translation[1] % translation[2];
+  LOG(INFO) << boost::format("New scale: %1%") % scale.factor();
   const Camera::Rig transformedRig = transformRig(rig, rotation, translation, scale);
 
   logMedianErrors(transformedRig, inlyingFeatures);

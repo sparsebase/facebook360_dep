@@ -21,7 +21,7 @@
 #include "source/thirdparty/stb_image.h"
 #pragma GCC diagnostic pop
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 namespace fb360_dep {
 
@@ -535,7 +535,7 @@ static bool isBC7Supported() {
   for (GLint i = 0; i < count; ++i) {
     const char* ext = reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i));
     if (strstr(ext, "texture_compression_")) {
-      LOG(INFO) << folly::sformat("- supported: {}", ext);
+      LOG(INFO) << boost::format("- supported: %1%") % ext;
     }
   }
   return cache;
@@ -680,12 +680,12 @@ static RigScene::Subframe createMeshSubframe(
     maximum = maximum.cwiseMax(v);
   }
   subframe.size = {maximum.x() + 0.5f, maximum.y() + 0.5f};
-  LOG(INFO) << folly::sformat(
-      "loaded {}x{} mesh, {} vertexes, {} faces",
-      subframe.size.x(),
-      subframe.size.y(),
-      vertexes.size(),
-      faces.size());
+  LOG(INFO) << boost::format(
+      "loaded %1%x%2% mesh, %3% vertexes, %4% faces")
+      % subframe.size.x()
+      % subframe.size.y()
+      % vertexes.size()
+      % faces.size();
   // load color
   subframe.colorTexture = loadTexture(imagePrefix);
   // clean up buffers
@@ -809,7 +809,7 @@ std::vector<RigScene::Subframe> RigScene::createFrame(
     const std::string& depths) const {
   std::vector<RigScene::Subframe> subframes(rig.size());
   for (int i = 0; i < int(subframes.size()); ++i) {
-    LOG(INFO) << folly::sformat("load subframe for {}", rig[i].id);
+    LOG(INFO) << boost::format("load subframe for %1%") % rig[i].id;
     subframes[i] = createSubframe(rig[i].id, images, depths);
   }
   return subframes;
