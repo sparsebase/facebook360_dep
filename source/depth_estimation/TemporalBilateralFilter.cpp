@@ -9,7 +9,7 @@
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
-
+#include <boost/format.hpp>
 #include "source/depth_estimation/Derp.h"
 #include "source/util/CvUtil.h"
 #include "source/util/FilesystemUtil.h"
@@ -99,7 +99,7 @@ void populateMinMaxFrame(
     int& firstFrameIdx,
     int& lastFrameIdx) {
   const std::string levelDir =
-      folly::sformat("{}/level_{}/{}", dir, std::to_string(level), camRef.id);
+      (boost::format("%1%/level_%2%/%3%") % dir % std::to_string(level) % camRef.id).str();
   const std::string ext = filesystem::getFirstExtension(levelDir);
 
   int localFirstFrameIdx = INT_MAX;

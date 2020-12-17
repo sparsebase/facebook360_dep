@@ -7,6 +7,7 @@
 
 #include "source/depth_estimation/DerpUtil.h"
 
+#include <boost/format.hpp>
 #include <queue>
 #include <vector>
 
@@ -279,7 +280,7 @@ filesystem::path getImageDir(const filesystem::path& dir, const ImageType& image
 
 filesystem::path
 getImageDir(const filesystem::path& dir, const ImageType& imageType, const int level) {
-  return folly::sformat("{}/level_{}", getImageDir(dir, imageType).string(), std::to_string(level));
+  return (boost::format("%1%/level_%2%") % getImageDir(dir, imageType).string() % std::to_string(level)).str();
 }
 
 filesystem::path getImageDir(

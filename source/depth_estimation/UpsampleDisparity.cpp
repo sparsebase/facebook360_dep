@@ -25,7 +25,7 @@ const char* kUsage = R"(
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/depth_estimation/TemporalBilateralFilter.h"
 
@@ -106,12 +106,12 @@ void upsampleFrame(const Camera::Rig& rigSrc, const Camera::Rig& rigDst, const s
   for (ssize_t i = 0; i < ssize(rigDst); ++i) {
     if (!FLAGS_color.empty()) {
       const int radius = getRadius(masks[i].size(), sizeUp);
-      LOG(INFO) << folly::sformat(
-          "Applying filter with radius {} to {}x{} disparity to {}...",
-          radius,
-          sizeUp.width,
-          sizeUp.height,
-          rigDst[i].id);
+      LOG(INFO) << boost::format(
+          "Applying filter with radius %1% to %2%x%3% disparity to %4%...")
+          %radius
+          %sizeUp.width
+          %sizeUp.height
+          %rigDst[i].id;
       const cv::Mat_<PixelType> colorUp = cv_util::resizeImage(colors[i], sizeUp);
       dispsUp[i] = depth_estimation::generalizedJointBilateralFilter<float, PixelType>(
           dispsUp[i],

@@ -11,7 +11,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 
 #include "source/isp/CameraIsp.h"
 #include "source/util/FilesystemUtil.h"
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
         FLAGS_pow2_downscale_factor,
         (DemosaicFilter)FLAGS_demosaic_filter,
         FLAGS_apply_tone_curve);
-    LOG(INFO) << folly::sformat("Runtime = {}", timer.format());
+    LOG(INFO) << boost::format("Runtime = %1%") % timer.format();
     imwriteExceptionOnFail(outputFiles[i], outputImage);
 
     if (!FLAGS_output_dng_path.empty()) {

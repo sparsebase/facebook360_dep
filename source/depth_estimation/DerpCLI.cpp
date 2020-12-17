@@ -10,7 +10,7 @@
 #include <boost/timer/timer.hpp>
 #include <glog/logging.h>
 
-#include <folly/Format.h>
+#include <boost/format.hpp>
 #include <folly/String.h>
 
 #include "source/depth_estimation/Derp.h"
@@ -120,15 +120,15 @@ filesystem::path getLevelDisparityDir(const int level) {
 }
 
 filesystem::path getLevelColorDir(const int level) {
-  return folly::sformat("{}/level_{}", FLAGS_color, std::to_string(level));
+  return (boost::format("%1%/level_%2%") % FLAGS_color % std::to_string(level)).str();
 }
 
 filesystem::path getLevelForegroundMasksDir(const int level) {
-  return folly::sformat("{}/level_{}", FLAGS_foreground_masks, std::to_string(level));
+  return (boost::format("%1%/level_%1%") % FLAGS_foreground_masks % std::to_string(level)).str();
 }
 
 filesystem::path getLevelBackgroundDisparityDir(const int level) {
-  return folly::sformat("{}/level_{}", FLAGS_background_disp, std::to_string(level));
+  return (boost::format("%1%/level_%1%") % FLAGS_background_disp % std::to_string(level)).str();
 }
 
 // Verifies that we have all the frames we are asking for
@@ -163,11 +163,11 @@ int getLevelEnd(const std::map<int, cv::Size>& pyramidLevelSizes) {
   }
 
   if (FLAGS_level_end >= 0) {
-    CHECK_GE(FLAGS_level_end, levelEnd) << folly::sformat(
-        "Requested end level {} ({}), which is larger than requested resolution ({})",
-        FLAGS_level_end,
-        pyramidLevelSizes.at(FLAGS_level_end).width,
-        FLAGS_resolution);
+    CHECK_GE(FLAGS_level_end, levelEnd) << boost::format(
+        "Requested end level %1% (%2%), which is larger than requested resolution (%3%)")
+        % FLAGS_level_end
+        % pyramidLevelSizes.at(FLAGS_level_end).width
+        % FLAGS_resolution;
   }
 
   levelEnd = std::max(levelEnd, FLAGS_level_end);
@@ -317,10 +317,10 @@ int main(int argc, char* argv[]) {
           FLAGS_threads);
     }
 
-    LOG(INFO) << folly::sformat("-- Elapsed time: {}", matchTimer.format());
+    LOG(INFO) << boost::format("-- Elapsed time: %1%") % matchTimer.format();
   }
 
-  LOG(INFO) << folly::sformat("-- TOTAL: {}", matchTimer.format());
+  LOG(INFO) << boost::format("-- TOTAL: %1%") % matchTimer.format();
 
   return EXIT_SUCCESS;
 }

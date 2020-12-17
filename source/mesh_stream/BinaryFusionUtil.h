@@ -12,7 +12,7 @@
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
-
+#include <boost/format.hpp>
 #include "source/mesh_stream/StripedFile.h"
 #include "source/render/VideoFile.h"
 #include "source/util/Camera.h"
@@ -27,7 +27,7 @@ void addFile(std::vector<FILE*>& disks, uint64_t& offset, const filesystem::path
   uint64_t end = offset == aligned ? offset + kStripeSize : aligned;
   uint64_t size = filesystem::file_size(filename);
   FILE* file = fopen(filename.string().c_str(), "rb");
-  LOG(INFO) << folly::sformat("Fusing {}...", filename.string());
+  LOG(INFO) << boost::format("Fusing %1%...") % filename.string();
   while (size) {
     std::vector<uint8_t> buffer(std::min(size, end - offset));
     CHECK_EQ(fread(buffer.data(), 1, buffer.size(), file), buffer.size())
