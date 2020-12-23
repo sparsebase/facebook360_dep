@@ -1132,7 +1132,7 @@ double refine(
   }
 
   // lock position
-  LOG(INFO) << boost::format("Pass: %1") % pass; 
+  LOG(INFO) << boost::format("Pass: %1%") % pass; 
   // If positions are unlocked, only lock the position and rotation of the reference camera
   if (positionsUnlocked(pass)) {
     problem.SetParameterBlockConstant(positions[referenceCameraIdx].data());

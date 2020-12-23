@@ -28,9 +28,9 @@ int main(int argc, char* argv[]) {
   fb360_dep::system_util::initDep(argc, argv, kUsageMessage);
 
   // run the calibration
-  int result = matchCorners();
-  if (result != EXIT_SUCCESS) {
-    return result;
-  }
+//   int result = matchCorners();
+//   if (result != EXIT_SUCCESS) {
+//     return result;
+//   }
   return geometricCalibration();
 }
