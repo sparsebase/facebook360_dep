@@ -115,7 +115,8 @@ class RepeatedTimer(object):
         """Stops the repeated execution."""
         self._timer.cancel()
         self.is_running = False
-
+        
+# End of class RepeatedTimer definition
 
 def init_facebook360_dep(gflags):
     """Sets up the environment with expected values and handlers.

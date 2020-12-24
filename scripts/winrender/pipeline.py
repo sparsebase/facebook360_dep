@@ -91,20 +91,21 @@ class Pipeline:
         self.master_ip = master_ip
         self.force_recompute = force_recompute
 
+        # Disabling the master creation in windows local mode
         # We only need to spawn the master if there is no RabbitMQ node already available
-        try:
-            pika.BlockingConnection(pika.ConnectionParameters(master_ip))
-        except Exception:
-            setup.setup_master(base_params)
+        # try:
+        #     pika.BlockingConnection(pika.ConnectionParameters(master_ip))
+        # except Exception:
+        #     setup.setup_master(base_params)
 
         # Since the master is spawned asynchronously, we have to await the queue to be available
-        while True:
-            try:
-                self.purge_queue(config.QUEUE_NAME)
-                break
-            except Exception:
-                time.sleep(1)
-                continue
+        # while True:
+        #     try:
+        #         self.purge_queue(config.QUEUE_NAME)
+        #         break
+        #     except Exception:
+        #         time.sleep(1)
+        #         continue
 
     def purge_queue(self, queue_name):
         """Clears contents of a queue.

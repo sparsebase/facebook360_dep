@@ -129,7 +129,7 @@ def set_input_param(base_params, image_type):
         image_type (str): Name of an image type (re: source/util/ImageTypes.h).
     """
     base_params[image_type] = os.path.join(
-        config.DOCKER_INPUT_ROOT, image_type_paths[image_type]
+        base_params["input_root"], image_type_paths[image_type]
     )
 
 
@@ -150,11 +150,11 @@ def main():
 
     base_params["num_levels"] = len(config.WIDTHS)
     if input_protocol is None or input_protocol == "smb":
-        base_params["input_root"] = config.DOCKER_INPUT_ROOT
-        base_params["output_root"] = config.DOCKER_OUTPUT_ROOT
-        base_params["rig"] = FLAGS.rig.replace(
-            FLAGS.input_root, base_params["input_root"]
-        )
+        # base_params["input_root"] = config.DOCKER_INPUT_ROOT
+        # base_params["output_root"] = config.DOCKER_OUTPUT_ROOT
+        # base_params["rig"] = FLAGS.rig.replace(
+        #     FLAGS.input_root, base_params["input_root"]
+        # )
         input_image_types = {
             "background_color",
             "background_disp",
