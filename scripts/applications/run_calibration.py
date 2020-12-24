@@ -56,6 +56,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     flags = vars(args)
 
-    app = AppUtil(binary_name="Calibration", flags=flags)
+    app = AppUtil(binary_name="Calibration.exe", flags=flags)
     time_elapsed = app.run_app()
     print(f"Execution time: {time_elapsed}s")

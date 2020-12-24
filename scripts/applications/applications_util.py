@@ -13,7 +13,7 @@ import time
 dir_scripts = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dir_root = os.path.dirname(dir_scripts)
 dir_res = os.path.join(dir_root, "res")
-binary_dir = os.path.join(dir_root, "build/bin")
+binary_dir = os.path.join(dir_root, "vs-build/x64-Release/bin")
 sys.path.append(dir_root)
 sys.path.append(os.path.join(dir_scripts, "util"))
 
