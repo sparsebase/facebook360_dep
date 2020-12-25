@@ -55,7 +55,7 @@ from network import (
     upload_image_type,
 )
 from resize import resize_frames
-from scripts.render.network import Address
+from scripts.winrender.network import Address
 from scripts.util.system_util import run_command
 from setup import bin_to_flags
 

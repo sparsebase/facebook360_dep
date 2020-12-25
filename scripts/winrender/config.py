@@ -53,7 +53,7 @@ QUEUE_NAME = "facebook360_dep"
 AWS_ROOT_NAME = "project/aws"
 BUILD_ROOT_NAME = "build"
 FLAGS_ROOT_NAME = "res/flags"
-INPUT_ROOT_NAME = "project"
+INPUT_ROOT_NAME = "."
 IPC_ROOT_NAME = "ipc"
 SCRIPTS_ROOT_NAME = "scripts"
 
@@ -61,7 +61,7 @@ OUTPUT_ROOT_NAME = "video"  # lies in INPUT_ROOT
 RIGS_ROOT_NAME = "rigs"  # lies in INPUT_ROOT
 
 DOCKER_NETWORK = "facebook360_dep"
-DOCKER_ROOT = "/app/facebook360_dep"
+DOCKER_ROOT = "D:/Images/1_frame_unpacked"
 DOCKER_AWS_ROOT = f"{DOCKER_ROOT}/{AWS_ROOT_NAME}"
 DOCKER_AWS_CREDENTIALS = f"{DOCKER_AWS_ROOT}/credentials.csv"
 DOCKER_AWS_WORKERS = f"{DOCKER_AWS_ROOT}/workers.txt"

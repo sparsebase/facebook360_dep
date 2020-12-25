@@ -47,13 +47,13 @@ Attributes:
 
 import os
 import posixpath
-import requests
+#import requests
 from shutil import which
 import sys
 import time
 
 import colorama
-import docker
+#import docker
 import pyvidia
 from absl import app, flags
 from watchdog.events import FileSystemEventHandler, DirModifiedEvent
@@ -286,7 +286,7 @@ def create_viewer_watchdog(client, ipc_dir, local_project_root):
     observer.join()
 
 
-def run_ui(client, docker_img):
+def run_ui():
     """Starts the UI.
 
     Args:
@@ -458,14 +458,14 @@ def main(argv):
     FLAGS.local_bin = os.path.expanduser(FLAGS.local_bin)
     FLAGS.project_root = os.path.expanduser(FLAGS.project_root)
 
-    setup_local_gpu()
-    client = docker.from_env()
-    docker_img = f"localhost:{config.DOCKER_REGISTRY_PORT}/{config.DOCKER_IMAGE}"
-    if not FLAGS.skip_setup:
-        build(client, docker_img)
-        if FLAGS.master != config.LOCALHOST:
-            start_registry(client)
-            push(client, docker_img)
+    #setup_local_gpu()
+    #client = docker.from_env()
+    #docker_img = f"localhost:{config.DOCKER_REGISTRY_PORT}/{config.DOCKER_IMAGE}"
+    #if not FLAGS.skip_setup:
+    #    build(client, docker_img)
+    #    if FLAGS.master != config.LOCALHOST:
+    #        start_registry(client)
+    #        push(client, docker_img)
     run_ui(client, docker_img)
 
 

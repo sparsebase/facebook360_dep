@@ -568,7 +568,7 @@ def local_rig_path(msg):
     Returns:
         str: Path to local rig.
     """
-    return msg["rig"].replace(msg["input_root"], config.DOCKER_INPUT_ROOT)
+    return msg["rig"]
 
 
 def local_image_type_path(msg, image_type, level=None):

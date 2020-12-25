@@ -448,15 +448,15 @@ def spawn_worker_local(replica):
     # We use Popen instead of run_command, since worker process is backgrounded
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S.%f")
     worker_logfile = os.path.join(
-        config.DOCKER_INPUT_ROOT, "logs", f"Worker-{timestamp}-{replica}"
+        FLAGS.log_dir, f"Worker-{timestamp}-{replica}"
     )
     os.makedirs(os.path.dirname(worker_logfile), exist_ok=True)
 
     with open(worker_logfile, "w") as fp:
         proc = Popen(
             [
-                "python3",
-                f"{config.DOCKER_SCRIPTS_ROOT}/render/worker.py",
+                "python",
+                f"scripts/winrender/worker.py",
                 f"--master={FLAGS.master}",
             ],
             stdout=fp,
