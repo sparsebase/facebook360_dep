@@ -396,7 +396,7 @@ void reportReprojectionErrors(
     std::ostringstream line;
     for (int percentile : {50, 90, 99}) {
       int index = percentile * (ssize(errors[i]) - 1) / 100.0 + 0.5;
-      line << boost::format("%1%%: %2.2 ") % percentile % sqrt(errors[i][index]); 
+      line << boost::format("%1%%%: %2.2 ") % percentile % sqrt(errors[i][index]); 
     }
     LOG(INFO) << boost::format("%1%: %2% reproj. percentile %3%") % cameras[i].id % ssize(errors[i]) % line.str(); 
   }

@@ -101,8 +101,8 @@ def _run_bin(msg):
         if not os.path.exists(root):
             cmd_flags = cmd_flags.replace(root, root_to_docker[root])
 
-    bin_path = os.path.join(config.DOCKER_BUILD_ROOT, "bin", app_name)
-    cmd = f"GLOG_alsologtostderr=1 GLOG_stderrthreshold=0 {bin_path} {cmd_flags}"
+    bin_path = os.path.join(config.DOCKER_BUILD_ROOT, "bin", app_name + ".exe")
+    cmd = f"set GLOG_alsologtostderr=1 && set GLOG_stderrthreshold=0 && {bin_path} {cmd_flags}" 
     run_command(cmd)
 
 
@@ -505,9 +505,10 @@ def handle_message(connection, channel, delivery_tag, body):
         success_callback = functools.partial(success, channel, delivery_tag)
         connection.add_callback_threadsafe(success_callback)
     except Exception:
+        print(f"Exception triggered in {app_name}")
         failure_callback = functools.partial(failure, channel, delivery_tag, msg)
         connection.add_callback_threadsafe(failure_callback)
-
+        sys.exit(0)
 
 def callback(ch, method, properties, body, connection):
     """Dispatches to different callbacks based on the contents of the message.

@@ -181,7 +181,6 @@ def main():
                 "last": get_frame_name(int(FLAGS.background_frame)),
             }
         ]
-
     pipeline = Pipeline(
         FLAGS.master, base_params, frame_chunks, background_frame, FLAGS.force_recompute
     )

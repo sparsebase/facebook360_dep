@@ -530,7 +530,7 @@ void pingPong(PyramidLevel<PixelType>& pyramidLevel, const int iterations, const
       const int countFov = cv::countNonZero(fovMask);
       const int count = cv::countNonZero(changed);
       const float changedPct = 100.0f * count / countFov;
-      LOG(INFO) << std::fixed << std::setprecision(2) << boost::format("changed: %1%%") % changedPct;
+      LOG(INFO) << std::fixed << std::setprecision(2) << boost::format("changed: %1%%%") % changedPct;
     }
   }
 }

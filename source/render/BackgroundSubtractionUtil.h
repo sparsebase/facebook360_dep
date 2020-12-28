@@ -53,7 +53,7 @@ cv::Mat_<bool> generateForegroundMask(
   const int count = cv::countNonZero(foregroundMask);
   const float fgPct = 100.0f * count / (foregroundMask.cols * foregroundMask.rows);
   LOG(INFO) << std::fixed << std::setprecision(2)
-            << boost::format("foreground amount: %1%%") % fgPct;
+            << boost::format("foreground amount: %1%%%") % fgPct;
   return foregroundMask;
 }
 

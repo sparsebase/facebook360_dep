@@ -17,7 +17,7 @@ namespace calibration {
 
 inline std::string
 getImageFilename(const std::string& image, const std::string& frame, const std::string& imageExt) {
-  return (boost::format("%1%/%2%%3%") % image % frame % imageExt).str();
+  return (boost::format("%1%/%2%%%3%") % image % frame % imageExt).str();
 }
 
 struct Keypoint {
