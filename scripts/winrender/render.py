@@ -76,7 +76,7 @@ def verify_inputs():
     """Verifies that all the command line flags are valid."""
     glog.check_ne(FLAGS.input_root, "", "Input_root cannot be empty")
     glog.check_ne(FLAGS.output_root, "", "Output_root cannot be empty")
-
+    glog.check_ne(FLAGS.format, "", "Render format cannot be empty")
     if not FLAGS.rig:
         FLAGS.rig = os.path.join(FLAGS.input_root, "rig.json")
 
