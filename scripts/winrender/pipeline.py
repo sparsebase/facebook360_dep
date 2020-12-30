@@ -365,9 +365,10 @@ class Pipeline:
         for level in range(start_level, end_level - 1, -1):
             depth_params = copy(post_resize_params)
             if level != end_level:
-                depth_params[
-                    "output_formats"
-                ] = "pfm"  # Force only PFM at non-finest levels
+                depth_params["output_formats"] = "pfm"  # Force only PFM at non-finest levels
+            elif depth_params["output_formats"] == "":
+                depth_params["output_formats"] = "pfm" # if output format is not specified, default is pfm
+                
             depth_params.update(
                 {
                     "app": f"DerpCLI: Level {level}",

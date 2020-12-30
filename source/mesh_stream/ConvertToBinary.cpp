@@ -190,7 +190,7 @@ void convertDepth(
   mesh_util::applyMaskToVertexesAndFaces(vertexes, faces, vertexMask);
   const int numFacesRemoved = originalFaceCount - faces.rows();
   LOG(INFO) << boost::format(
-      "Removed %1% of %2% faces (%3$.2f%) corresponding to invalid depths and masked vertexes") 
+      "Removed %1% of %2% faces (%3$.2f%%) corresponding to invalid depths and masked vertexes") 
       % numFacesRemoved
       % originalFaceCount
       % (100.f * numFacesRemoved / (float)originalFaceCount);
