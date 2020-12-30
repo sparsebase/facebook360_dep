@@ -269,7 +269,7 @@ void fuse(const Camera::Rig& rig, const std::vector<std::string>& outputFormats)
   std::vector<FILE*> disks;
   filesystem::create_directories(FLAGS_fused);
   for (int i = 0; i < FLAGS_fuse_strip; ++i) {
-    const std::string diskName = (boost::format("%1%/fused_%1%.bin") % FLAGS_fused % std::to_string(i)).str();
+    const std::string diskName = (boost::format("%1%/fused_%2%.bin") % FLAGS_fused % std::to_string(i)).str();
     FILE* disk = fopen(diskName.c_str(), "wb");
     CHECK(disk) << boost::format("Failed to open %1%") % diskName;
     disks.push_back(disk);
