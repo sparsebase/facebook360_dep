@@ -27,10 +27,10 @@ sys.path.append(dir_root)
 sys.path.append(os.path.join(dir_scripts, "render"))
 sys.path.append(os.path.join(dir_scripts, "util"))
 
-import scripts.render.glog_check as glog
-from scripts.render.resize import resize_frames
-from scripts.util.system_util import list_only_visible_files, merge_lists
 
+import scripts.winrender.glog_check as glog
+from scripts.winrender.resize import resize_frames
+from scripts.util.system_util import list_only_visible_files, merge_lists
 global verbose
 
 

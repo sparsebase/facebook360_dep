@@ -68,7 +68,7 @@ sys.path.append(os.path.join(dir_scripts, "ui"))
 import config
 import glog_check as glog
 from network import Address, get_os_type
-from scripts.aws.util import AWSUtil
+#from scripts.aws.util import AWSUtil
 from scripts.ui.project import Project
 from scripts.util.system_util import (
     get_flags_from_flagfile,
@@ -337,52 +337,26 @@ def run_ui():
         --verbose={FLAGS.verbose}""",
     ]
 
-    docker_networks = client.networks.list()
-    network_names = [docker_network.name for docker_network in docker_networks]
-    if config.DOCKER_NETWORK not in network_names:
-        client.networks.create(config.DOCKER_NETWORK, driver="bridge")
+    #docker_networks = client.networks.list()
+    #network_names = [docker_network.name for docker_network in docker_networks]
+    #if config.DOCKER_NETWORK not in network_names:
+    #    client.networks.create(config.DOCKER_NETWORK, driver="bridge")
 
     project_address = Address(FLAGS.project_root)
     project_protocol = project_address.protocol
-    if project_protocol == "smb":
-        mounts = docker_mounts(
-            FLAGS.project_root, host_to_docker_path, FLAGS.username, FLAGS.password
-        )
-        cmds = [f"mkdir {config.DOCKER_INPUT_ROOT}"] + mounts + cmds
-
-        local_project_root = None
-    elif project_protocol == "s3":
-        glog.check_ne(
-            FLAGS.csv_path, "", "csv_path cannot be empty if rendering on AWS"
-        )
-        aws_util = AWSUtil(FLAGS.csv_path, s3_url=FLAGS.project_root)
-        glog.check(
-            aws_util.s3_bucket_is_valid(FLAGS.project_root),
-            f"Invalid S3 project path: {FLAGS.project_root}",
-        )
-
-        volumes.update(
-            {FLAGS.csv_path: {"bind": config.DOCKER_AWS_CREDENTIALS, "mode": "rw"}}
-        )
-
-        project_name = project_address.path
-        cache_path = os.path.join(os.path.expanduser(FLAGS.cache), project_name)
-        os.makedirs(cache_path, exist_ok=True)
-        volumes.update({cache_path: {"bind": config.DOCKER_INPUT_ROOT, "mode": "rw"}})
-
-        local_project_root = cache_path
-    else:
-        glog.check(
-            os.path.isdir(FLAGS.project_root),
-            f"Invalid project path: {FLAGS.project_root}",
-        )
-        volumes.update(
-            {
-                host_path: {"bind": docker_path, "mode": "rw"}
-                for host_path, docker_path in host_to_docker_path.items()
-            }
-        )
-        local_project_root = FLAGS.project_root
+    # Under windows only support local rendering
+    
+    glog.check(
+        os.path.isdir(FLAGS.project_root),
+        f"Invalid project path: {FLAGS.project_root}",
+    )
+    volumes.update(
+        {
+            host_path: {"bind": docker_path, "mode": "rw"}
+            for host_path, docker_path in host_to_docker_path.items()
+        }
+    )
+    local_project_root = FLAGS.project_root
 
     ipc_dir = os.path.join(local_project_root, "ipc")
     os.makedirs(ipc_dir, exist_ok=True)
@@ -466,7 +440,7 @@ def main(argv):
     #    if FLAGS.master != config.LOCALHOST:
     #        start_registry(client)
     #        push(client, docker_img)
-    run_ui(client, docker_img)
+    run_ui()
 
 
 if __name__ == "__main__":

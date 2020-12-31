@@ -193,24 +193,21 @@ def main():
 
     if FLAGS.use_foreground_masks:
         # Resize foreground masks
-        pipeline_stages.append(
-            (
-                pipeline.precompute_resizes_foreground,
-                FLAGS.run_precompute_resizes_foreground,
-            )
-        )
+        pipeline_stages += [
+            (pipeline.precompute_resizes_foreground, FLAGS.run_precompute_resizes_foreground)
+        ]
 
-    pipeline_stages.append((pipeline.depth_estimation, FLAGS.run_depth_estimation))
+    pipeline_stages += [(pipeline.depth_estimation, FLAGS.run_depth_estimation)]
 
     if FLAGS.format == "6dof":
         pipeline_stages += [
             (pipeline.convert_to_binary, FLAGS.run_convert_to_binary),
-            (pipeline.fusion, FLAGS.run_fusion),
+            (pipeline.fusion, FLAGS.run_fusion)
         ]
     else:
-        pipeline_stages.append(
+        pipeline_stages += [
             (pipeline.simple_mesh_renderer, FLAGS.run_simple_mesh_renderer)
-        )
+        ]
 
     pipeline.run(pipeline_stages)
     setup.cleanup_workers()

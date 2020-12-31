@@ -508,7 +508,6 @@ def handle_message(connection, channel, delivery_tag, body):
         print(f"Exception triggered in {app_name}")
         failure_callback = functools.partial(failure, channel, delivery_tag, msg)
         connection.add_callback_threadsafe(failure_callback)
-        sys.exit(0)
 
 def callback(ch, method, properties, body, connection):
     """Dispatches to different callbacks based on the contents of the message.

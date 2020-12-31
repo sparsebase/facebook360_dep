@@ -26,7 +26,7 @@ sys.path.append(dir_root)
 sys.path.append(os.path.join(dir_scripts, "render"))
 sys.path.append(os.path.join(dir_scripts, "util"))
 
-import scripts.render.glog_check as glog
+import scripts.winrender.glog_check as glog
 from scripts.util.system_util import run_command
 
 
