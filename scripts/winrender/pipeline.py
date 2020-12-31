@@ -467,6 +467,7 @@ class Pipeline:
                 "foreground_masks": "",
                 "run_conversion": True,
                 "dst_level": None,
+                "output_formats": "bc7,idx,pfm,vtx",
                 "dst_image_type": "bin",
             }
         )
@@ -479,6 +480,7 @@ class Pipeline:
             {
                 "app": "ConvertToBinary: Striping",
                 "run_conversion": False,
+                "force_recompute": True, #always recompute the fusion stage
                 "dst_level": None,
                 "dst_image_type": "fused",
             }
