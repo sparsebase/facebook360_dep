@@ -572,6 +572,7 @@ class Pipeline:
                 "run_conversion": False,
                 "force_recompute": True,  # always recompute the fusion stage
                 "dst_level": None,
+                "output_formats": "",
                 "dst_image_type": "fused",
             }
         )
