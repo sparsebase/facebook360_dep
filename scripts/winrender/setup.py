@@ -231,6 +231,7 @@ def define_flags():
     flags.DEFINE_string(
         "password", "", "password for NFS (only relevant for SMB mounts)"
     )
+    flags.DEFINE_boolean("run_background_depth_estimate", True, "run background depth esimation and generate background disparity")
     flags.DEFINE_boolean("run_convert_to_binary", True, "run binary conversion")
     flags.DEFINE_boolean("run_depth_estimation", True, "run depth estimation")
     flags.DEFINE_boolean("run_fusion", True, "run fusion")

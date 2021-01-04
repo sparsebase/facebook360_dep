@@ -24,6 +24,18 @@ Example:
         >>> pipeline.run(pipeline_stages)
 """
 
+from scripts.util.system_util import image_type_paths
+from network import (
+    Address,
+    download,
+    get_frame_fns,
+    get_frame_name,
+    get_frame_range,
+    listdir,
+    remote_image_type_path,
+)
+import setup
+import config
 import json
 import os
 import sys
@@ -37,19 +49,6 @@ dir_scripts = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dir_root = os.path.dirname(dir_scripts)
 sys.path.append(dir_root)
 sys.path.append(os.path.join(dir_scripts, "util"))
-
-import config
-import setup
-from network import (
-    Address,
-    download,
-    get_frame_fns,
-    get_frame_name,
-    get_frame_range,
-    listdir,
-    remote_image_type_path,
-)
-from scripts.util.system_util import image_type_paths
 
 
 class Pipeline:
@@ -290,16 +289,18 @@ class Pipeline:
         """Runs distributed color, background color, and background disparity resizing."""
         resize_params = copy(self.base_params)
         if resize_params["disparity_type"] == "background_disp":
-            self._resize_job(resize_params, "background_color", self.background_frame)
+            self._resize_job(resize_params, "background_color",
+                             self.background_frame)
         elif resize_params["disparity_type"] == "disparity":
             self._resize_job(resize_params, "color", self.frame_chunks)
-            if self.background_frame is not None:
-                self._resize_job(
-                    resize_params, "background_color", self.background_frame
-                )
-                self._resize_job(
-                    resize_params, "background_disp", self.background_frame
-                )
+            # Background disparity should be ready at this stage, so skip
+            # if self.background_frame is not None:
+            #     self._resize_job(
+            #         resize_params, "background_color", self.background_frame
+            #     )
+            #     self._resize_job(
+            #         resize_params, "background_disp", self.background_frame
+            #     )
         else:
             raise Exception(
                 f"Invalid disparity type: {resize_params['disparity_type']}"
@@ -457,6 +458,95 @@ class Pipeline:
             )
             self.run_halted_queue(transfer_params, self.frame_chunks)
 
+    def background_depth_estimation(self):
+        """Runs distributed depth estimation with temporal filtering."""
+        bde_params = copy(self.base_params)  # background depth estimation
+        bde_params["disparity_type"] = "background_disp"
+        bde_params["color"] = os.path.join(
+            self.base_params["input_root"],
+            image_type_paths[config.type_to_levels_type["color"]],
+        )
+
+        start_level = (
+            bde_params["level_start"]
+            if bde_params["level_start"] != -1
+            else len(config.WIDTHS) - 1
+        )
+        if bde_params["level_end"] != -1:
+            end_level = bde_params["level_end"]
+        else:
+            for level, width in enumerate(config.WIDTHS):
+                if bde_params["resolution"] >= width:
+                    end_level = level
+                    break
+
+        # resize background first
+        resize_params = copy(bde_params)
+        self._resize_job(resize_params, "background_color",
+                         self.background_frame)
+
+        for level in range(start_level, end_level - 1, -1):
+            depth_params = copy(bde_params)
+            if level != end_level:
+                # Force only PFM at non-finest levels
+                depth_params["output_formats"] = "pfm"
+            elif depth_params["output_formats"] == "":
+                # if output format is not specified, default is pfm
+                depth_params["output_formats"] = "pfm"
+
+            depth_params.update(
+                {
+                    "app": f"DerpCLI: Level {level}",
+                    "level_start": level,
+                    "level_end": level,
+                    "image_type": depth_params["disparity_type"],
+                    "dst_level": level,
+                    "dst_image_type": depth_params["disparity_type"],
+                }
+            )
+            self.run_halted_queue(depth_params, self.background_frame)
+
+        if bde_params["resolution"] > config.WIDTHS[end_level]:
+            # The upsampling color level is the smallest one larger than our last level
+            dst_level = end_level - 1 if end_level > 0 else None
+            upsample_params = copy(self.base_params)
+            upsample_params.update(
+                {
+                    "app": "UpsampleDisparity",
+                    "level": end_level,
+                    "image_type": bde_params["disparity_type"],
+                    "dst_level": dst_level,
+                    "dst_image_type": config.type_to_upsample_type["background_disp"],
+                }
+            )
+
+            self.run_halted_queue(upsample_params, self.background_frame)
+
+            transfer_params = copy(bde_params)
+            transfer_params.update(
+                {
+                    "app": "Transfer",
+                    "src_level": None,
+                    "src_image_type": config.type_to_upsample_type["background_disp"],
+                    "dst_level": None,
+                    "dst_image_type": bde_params["disparity_type"],
+                }
+            )
+            self.run_halted_queue(transfer_params, self.background_frame)
+
+        else:  # resolution satified, only copy
+            transfer_params = copy(bde_params)
+            transfer_params.update(
+                {
+                    "app": "Transfer",
+                    "src_level": end_level,
+                    "src_image_type": bde_params["disparity_type"],
+                    "dst_level": None,
+                    "dst_image_type": bde_params["disparity_type"],
+                }
+            )
+            self.run_halted_queue(transfer_params, self.background_frame)
+
     def convert_to_binary(self):
         """Runs distributed binary conversion."""
         convert_to_binary_params = copy(self.base_params)
@@ -480,7 +570,7 @@ class Pipeline:
             {
                 "app": "ConvertToBinary: Striping",
                 "run_conversion": False,
-                "force_recompute": True, #always recompute the fusion stage
+                "force_recompute": True,  # always recompute the fusion stage
                 "dst_level": None,
                 "dst_image_type": "fused",
             }
