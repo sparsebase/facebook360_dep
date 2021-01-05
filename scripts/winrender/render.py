@@ -188,13 +188,13 @@ def main():
     # We need resized colors to compute foreground masks
     pipeline_stages = [
         (pipeline.background_depth_estimation, FLAGS.run_background_depth_estimate),
-        (pipeline.precompute_resizes, FLAGS.run_precompute_resizes),
-        (pipeline.generate_foreground_masks, FLAGS.run_generate_foreground_masks),
+        (pipeline.precompute_resizes, FLAGS.run_precompute_resizes)
     ]
 
     if FLAGS.use_foreground_masks:
         # Resize foreground masks
         pipeline_stages += [
+            (pipeline.generate_foreground_masks, FLAGS.run_generate_foreground_masks),
             (pipeline.precompute_resizes_foreground, FLAGS.run_precompute_resizes_foreground)
         ]
 

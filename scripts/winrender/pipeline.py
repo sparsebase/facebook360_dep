@@ -386,7 +386,7 @@ class Pipeline:
                 filter_params = copy(post_resize_params)
                 filter_params.update(
                     {
-                        "app": "TemporalBilateralFilter",
+                        "app": "TemporalBilateralFilter: Disparity",
                         "level": level,
                         "use_foreground_masks": post_resize_params[
                             "do_temporal_masking"
@@ -400,7 +400,7 @@ class Pipeline:
                 transfer_params = copy(post_resize_params)
                 transfer_params.update(
                     {
-                        "app": "Transfer",
+                        "app": "Transfer: Temporal filtered disparity",
                         "src_level": level,
                         "src_image_type": "disparity_time_filtered",
                         "dst_level": level,
@@ -415,7 +415,7 @@ class Pipeline:
             upsample_params = copy(self.base_params)
             upsample_params.update(
                 {
-                    "app": "UpsampleDisparity",
+                    "app": "UpsampleDisparity: Disparity",
                     "level": end_level,
                     "image_type": post_resize_params["disparity_type"],
                     "dst_level": dst_level,
@@ -436,7 +436,7 @@ class Pipeline:
             transfer_params = copy(post_resize_params)
             transfer_params.update(
                 {
-                    "app": "Transfer",
+                    "app": "Transfer: Disparity",
                     "src_level": None,
                     "src_image_type": config.type_to_upsample_type["disparity"],
                     "dst_level": None,
@@ -449,7 +449,7 @@ class Pipeline:
             transfer_params = copy(post_resize_params)
             transfer_params.update(
                 {
-                    "app": "Transfer",
+                    "app": "Transfer: Disparity",
                     "src_level": end_level,
                     "src_image_type": post_resize_params["disparity_type"],
                     "dst_level": None,
@@ -496,7 +496,7 @@ class Pipeline:
 
             depth_params.update(
                 {
-                    "app": f"DerpCLI: Level {level}",
+                    "app": f"DerpCLI: Background Level {level}",
                     "level_start": level,
                     "level_end": level,
                     "image_type": depth_params["disparity_type"],
@@ -512,7 +512,7 @@ class Pipeline:
             upsample_params = copy(self.base_params)
             upsample_params.update(
                 {
-                    "app": "UpsampleDisparity",
+                    "app": "UpsampleDisparity: Background_disp",
                     "level": end_level,
                     "image_type": bde_params["disparity_type"],
                     "dst_level": dst_level,
@@ -525,7 +525,7 @@ class Pipeline:
             transfer_params = copy(bde_params)
             transfer_params.update(
                 {
-                    "app": "Transfer",
+                    "app": "Transfer: Background_disp",
                     "src_level": None,
                     "src_image_type": config.type_to_upsample_type["background_disp"],
                     "dst_level": None,
@@ -538,7 +538,7 @@ class Pipeline:
             transfer_params = copy(bde_params)
             transfer_params.update(
                 {
-                    "app": "Transfer",
+                    "app": "Transfer: Background_disp",
                     "src_level": end_level,
                     "src_image_type": bde_params["disparity_type"],
                     "dst_level": None,
@@ -568,7 +568,7 @@ class Pipeline:
         fusion_params = copy(self.base_params)
         fusion_params.update(
             {
-                "app": "ConvertToBinary: Striping",
+                "app": "ConvertToBinary: Fusion",
                 "run_conversion": False,
                 "force_recompute": True,  # always recompute the fusion stage
                 "dst_level": None,
@@ -590,7 +590,7 @@ class Pipeline:
         simple_mesh_renderer_params = copy(self.base_params)
         simple_mesh_renderer_params.update(
             {
-                "app": "SimpleMeshRenderer",
+                "app": f"SimpleMeshRenderer: To {simple_mesh_renderer_params['format']}",
                 "level": None,
                 "dst_level": None,
                 "dst_image_type": f"exports_{simple_mesh_renderer_params['format']}",
