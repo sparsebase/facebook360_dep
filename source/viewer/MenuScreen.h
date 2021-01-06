@@ -14,7 +14,7 @@
 #include <iostream>
 
 #include "OVR_CAPI_GL.h"
-#include "Samples/OculusRoomTiny_Advanced/Common/Win32_GLAppUtil.h"
+#include "Samples/OculusRoomTiny/Common/Win32_GLAppUtil.h"
 #include "source/thirdparty/stb_image.h"
 
 namespace fb360_dep {

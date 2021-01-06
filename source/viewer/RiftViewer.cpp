@@ -33,10 +33,10 @@ const std::string kUsageMessage = R"(
    Keyboard navigation:
    - W/UP, A, S/DOWN, and D translate forward, left, back, and right, respectively
    - LEFT and RIGHT rotate left and right, respectively
-   - C recenters the view
+   - C re-centers the view
 
    Keyboard controls:
-   - SPACE pauses and plays the video
+   - SPACE Fade out the menu screen, pauses and plays the video
    - ESC/ctrl-Q closes the app
    - H toggles headbox fade-out
    - B toggles background rendering (experimental)
@@ -68,12 +68,13 @@ struct OculusTextureBuffer {
         ColorTextureChain(nullptr),
         DepthTextureChain(nullptr),
         fboId(0),
-        texSize(0, 0) {
+        texSize(0, 0) 
+  {
     assert(sampleCount <= 1); // The code doesn't currently handle MSAA textures.
 
     texSize = size;
 
-    // This texture isn't necessarily going to be a rendertarget, but it usually is.
+    // This texture isn't necessarily going to be a render target, but it usually is.
     assert(session); // No HMD? A little odd.
 
     ovrTextureSwapChainDesc desc = {};
@@ -229,7 +230,8 @@ static std::vector<char> getAndUpdateActiveKeys() {
 }
 
 // return true to retry later (e.g. after display lost)
-static bool MainLoop(bool retryCreate) {
+static bool MainLoop(bool retryCreate) 
+{
   OculusTextureBuffer* eyeRenderTexture[2] = {nullptr, nullptr};
   ovrMirrorTexture mirrorTexture = nullptr;
   GLuint mirrorFBO = 0;
